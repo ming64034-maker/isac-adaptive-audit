@@ -166,7 +166,7 @@ class Config:
     proposedv2_rate_regret_threshold: float = 0.012
     proposedv2_min_safety_gain_for_fallback: float = 0.012
     proposedv2_tri_regime_gate_enabled: bool = True
-    proposedv2_clear_suppress_threshold: float = 0.06
+    proposedv2_clear_suppress_threshold: float = 0.02
     proposedv2_extreme_rate_regret_threshold: float = 0.012
     proposedv2_extreme_min_safety_gain: float = 0.012
     proposedv2_difficulty_ema_alpha: float = 0.25
