@@ -20,15 +20,15 @@ Table 1 reports the aggregate comparison across five methods.
 
 **Key observations:**
 
-1. **Rate**: ProposedV2 achieves 5.065 bits/s/Hz, a +0.055 gain over Reactive and +0.165 over Belief-Aware Rollout. The gain over Reactive is modest but consistent.
+1. **Rate**: ProposedV2 achieves 5.065 bits/s/Hz, a +0.055 gain over Reactive in aggregate and +0.165 over Belief-Aware Rollout. However, rate advantage is regime-dependent: ProposedV2 wins rate at only 6/16 scene sweep points. The aggregate rate gain is modest, while rate advantage is regime-dependent.
 
-2. **Outage**: ProposedV2 reduces outage probability by 32% vs Reactive (0.072 vs 0.106) and by 33% vs Belief-Aware Rollout (0.072 vs 0.108). This is the primary reliability gain.
+2. **Outage** (strongest claim): ProposedV2 reduces outage probability by 32% vs Reactive (0.072 vs 0.106) and by 33% vs Belief-Aware Rollout (0.072 vs 0.108). Outage wins at 16/16 scene sweep points. This is the primary and most robust reliability gain.
 
-3. **Beam success**: ProposedV2 achieves 0.793 beam success rate, +0.052 over Reactive, confirming that predictive beam selection captures the correct beam more often than purely reactive angle-based selection.
+3. **Beam success** (strong claim): ProposedV2 achieves 0.793 beam success rate, +0.052 over Reactive. Beam success wins at 16/16 scene sweep points, confirming that predictive beam selection captures the correct beam more often than purely reactive angle-based selection.
 
-4. **Return**: The aggregate return of 4.881 reflects a balanced tradeoff — rate competitive with Reactive (+1.1%), substantially lower outage (-32%), and higher beam accuracy (+7.0%).
+4. **Return**: The aggregate return of 4.881 reflects a balanced tradeoff — modest rate advantage (+1.1%), substantially lower outage (-32%), and higher beam accuracy (+7.0%). Return wins at 10/16 sweep points; the 6 points where Reactive leads on return are documented as failure regimes below.
 
-5. **Latency**: ProposedV2 adds ~0.28 ms of planning latency per slot compared to ~0.003 ms for Reactive. This is negligible relative to typical slot durations in mmWave systems.
+5. **Latency**: ProposedV2 adds ~0.28 ms of planning latency per slot compared to ~0.003 ms for Reactive. Planning latency is higher than Reactive but lower than Belief-Aware Rollout in the simplified simulator; real-time feasibility requires system-level validation.
 
 6. **Relative to upper bound**: ProposedV2 achieves 81.1% of the Oracle return, while Reactive achieves 78.8%. The gap to Oracle is primarily from imperfect blockage prediction.
 
@@ -55,7 +55,7 @@ We evaluate all methods across 16 scene configurations spanning four difficulty 
 | reflection_strength | baseline | 4.855 | 4.744 | **+0.111** | 0.074 | 0.106 |
 | reflection_strength | strong | 4.859 | 4.705 | **+0.154** | 0.067 | 0.106 |
 
-**Aggregate sweep statistics**: ProposedV2 beats or matches Reactive on outage at 16/16 sweep points, on beam success at 16/16, on return at 10/16, and on rate at 6/16.
+**Aggregate sweep statistics**: ProposedV2 beats or matches Reactive on outage at 16/16 sweep points and on beam success at 16/16 sweep points — these are the two most robust claims. Return advantage is narrower (10/16 wins) and rate advantage is regime-dependent (6/16 wins).
 
 **Failure regimes**: The largest return deficits appear at:
 - `obs_noise = 0.00` (deficit -0.185): With perfect observations, reactive beam selection is near-optimal and predictive fallback adds unnecessary switching cost.
@@ -100,3 +100,7 @@ The Oracle baseline experiences no rate drop at blockage onset because it always
 ## 4.6 Threshold Sensitivity
 
 A sweep over the three primary hyperparameters (LoS confidence threshold, risk threshold, path spread threshold) across 100 configurations reveals that the method is robust to threshold choice within a reasonable range. The best configuration achieves return 4.878 at (los_confidence=0.80, risk=0.25, path_spread=0.20), only 0.003 below the default thresholds. The top 10 configurations all achieve return within 0.010 of each other, indicating the method does not require precise threshold tuning.
+
+## 4.7 Evidence Boundary
+
+These results are controlled simulation evidence in a simplified 2D dynamic-blockage environment. They should not be interpreted as real-system performance or universal superiority over all predictive beamforming methods. All comparisons are limited to the five evaluated methods under the specified simulation protocol. The sweep points, ablation variants, and hyperparameter ranges reported here constitute the full set of conditions tested; performance outside these conditions is not characterized.

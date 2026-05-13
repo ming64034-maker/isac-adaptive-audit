@@ -2,7 +2,7 @@
 
 ## 5.1 Motivation
 
-The scene sweep results (Section 4.3) reveal that ProposedV2's advantage over Reactive is not uniform — it varies systematically with scene difficulty. This section characterizes the regime boundaries: the conditions under which predictive beam control provides the largest gains, and the conditions under which reactive baselines remain competitive or superior.
+The scene sweep results (Section 4.3) reveal that ProposedV2's advantage over Reactive is not uniform — it varies systematically with scene difficulty. Outage and beam success are robust across all regimes (16/16 wins each), while return and rate advantages are regime-dependent (10/16 and 6/16 wins respectively). This section characterizes the regime boundaries: the conditions under which predictive beam control provides the largest gains, and the conditions under which reactive baselines remain competitive or superior on return.
 
 ## 5.2 Regime Taxonomy
 
@@ -15,7 +15,7 @@ We define three operational regimes based on the observation vector components a
 
 **ProposedV2 behavior**: The LoS guard keeps the predictor inactive most of the time, preserving the efficiency of reactive beam selection. Occasional predictive fallbacks are triggered by the cooldown mechanism after rare blockage events.
 
-**Observed performance**: Modest gains over Reactive in rate (+0.03 to +0.05), small outage improvement (-0.01 to -0.02). The return advantage is narrow because both methods perform well.
+**Observed performance**: Outage improvement is small in absolute terms (-0.01 to -0.02) because both methods achieve low outage. Return advantage is narrow; rate may be slightly above or below Reactive depending on the specific configuration. This regime is not where ProposedV2's value proposition lies.
 
 ### Medium-Risk Regime
 **Conditions**: Moderate blockage indicator, some path spread, occasional reflection activity. Neither fully clear nor severely degraded.
@@ -52,7 +52,7 @@ At moderate noise (0.05), the reactive baseline degrades because noisy observati
 
 At high noise (0.10), the gap widens dramatically: ProposedV2 return is +16.6% over Reactive, with outage nearly halved (0.090 vs 0.179). The reactive baseline collapses because noisy angle estimates lead to frequent beam misalignment, while the predictor maintains reasonable accuracy by leveraging the learned dynamics model.
 
-**Key insight**: The cross-over point where ProposedV2 becomes clearly superior is approximately at `obs_noise ≈ 0.03–0.04`. Below this threshold, reactive methods are preferred; above it, predictive control provides increasing advantage.
+**Key insight**: The cross-over point where ProposedV2 begins to outperform Reactive on return is approximately at `obs_noise ≈ 0.03–0.04`. Below this threshold, reactive methods achieve higher return; above it, predictive control provides increasing advantage. Outage and beam success favor ProposedV2 across the full noise range.
 
 ## 5.4 Blocker Density and Predictability Limits
 

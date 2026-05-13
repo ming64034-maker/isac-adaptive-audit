@@ -43,7 +43,7 @@ The method uses 3 primary hyperparameters (LoS confidence threshold, risk thresh
 
 ### 6.2.4 Computational Cost
 
-The predictive fallback requires a forward pass through the predictor network and, when the world model is used, multi-step latent rollouts. The measured planning latency (0.28 ms) is acceptable for typical mmWave slot durations (0.125–1.0 ms), but the method assumes access to a learned world model that must be trained offline. The training cost and data requirements are not analyzed in this work.
+The predictive fallback requires a forward pass through the predictor network and, when the world model is used, multi-step latent rollouts. The measured planning latency (0.28 ms) is higher than Reactive (0.003 ms) but lower than Belief-Aware Rollout (0.78 ms) in the simplified simulator. Real-time feasibility requires system-level validation including hardware-in-the-loop measurement. The method also assumes access to a learned world model that must be trained offline; training cost and data requirements are not analyzed in this work.
 
 ## 6.3 Negative Results: Attempts at Additional Gating
 

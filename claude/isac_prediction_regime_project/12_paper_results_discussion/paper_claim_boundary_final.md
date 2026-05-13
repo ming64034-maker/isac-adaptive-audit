@@ -5,9 +5,9 @@
 **ProposedV2 (Regime-Aware Predictive Beam Control) improves reliability-oriented metrics (outage probability, beam success rate) while preserving competitive aggregate rate, but gains are regime-dependent.**
 
 This claim is supported by:
-- 32% outage reduction vs Reactive (0.072 vs 0.106) at competitive rate (5.065 vs 5.010)
-- 7.0% beam success rate improvement (0.793 vs 0.742)
-- 16/16 sweep points with better outage than Reactive
+- 32% outage reduction vs Reactive (0.072 vs 0.106), 16/16 sweep points with better outage
+- 7.0% beam success rate improvement (0.793 vs 0.742), 16/16 sweep points with better beam success
+- Competitive aggregate rate (5.065 vs 5.010), though rate advantage is regime-dependent (6/16 wins)
 - 8.4% faster blockage recovery (1.86 vs 2.03 slots)
 
 ## Claim Boundaries
@@ -36,6 +36,10 @@ This claim is supported by:
 
 5. **Computational efficiency advantage**: The method requires a trained predictor and world model. Training cost and data requirements are not compared to baselines.
 
+6. **Real-time feasibility**: Planning latency is not validated in a real-time system context. Simulator-measured latency does not guarantee real-time operation on target hardware.
+
+7. **Consistent rate advantage**: The aggregate rate gain (+1.1%) does not hold uniformly — rate advantage is regime-dependent and wins at only 6/16 sweep points.
+
 ### Failed variant claims
 
 The following are explicitly NOT claimed:
@@ -52,8 +56,8 @@ These negative results are documented in the Discussion section as partial direc
 | Metric | Evidence Strength | Notes |
 |---|---|---|
 | Outage reduction vs Reactive | **Strong** | Consistent at all 16 sweep points, 32% aggregate |
-| Beam success improvement | **Strong** | Consistent at all 16 sweep points |
-| Rate competitiveness | **Moderate** | +1.1% aggregate, but loses at 10/16 sweep points |
+| Beam success improvement | **Strong** | 16/16 sweep point wins, consistent across regimes |
+| Rate competitiveness | **Regime-dependent** | +1.1% aggregate, but wins at only 6/16 sweep points |
 | Return advantage | **Regime-conditional** | Wins at 10/16 sweep points, loses at 6/16 |
 | Blockage recovery speed | **Moderate** | 8.4% faster, but small sample (40 events) |
 | Ablation necessity | **Strong** | Large effect sizes (-0.996 and -0.143) |
