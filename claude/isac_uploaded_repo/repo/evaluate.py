@@ -186,6 +186,15 @@ def evaluate_policy(cfg: Config, method: str, policy_factory, seeds: list[int]) 
                             diagnostics,
                             "planner_rate_veto_triggered",
                         ),
+                        "planner_tri_regime_mode": optional_value(diagnostics, "planner_tri_regime_mode"),
+                        "planner_clear_suppress_triggered": optional_value(
+                            diagnostics,
+                            "planner_clear_suppress_triggered",
+                        ),
+                        "planner_extreme_veto_triggered": optional_value(
+                            diagnostics,
+                            "planner_extreme_veto_triggered",
+                        ),
                         "planner_fallback_kept_after_veto": optional_value(
                             diagnostics,
                             "planner_fallback_kept_after_veto",
@@ -287,6 +296,9 @@ def summarize_step_diagnostics(df: pd.DataFrame, group_cols: list[str]) -> pd.Da
         "planner_reactive_safety_gain",
         "planner_reactive_veto_triggered",
         "planner_rate_veto_triggered",
+        "planner_tri_regime_mode",
+        "planner_clear_suppress_triggered",
+        "planner_extreme_veto_triggered",
         "planner_fallback_kept_after_veto",
         "planner_los_recovery_gate",
         "planner_los_recovery_bias_max",

@@ -553,6 +553,28 @@ class ProposedV2Policy:
             "planner_adaptive_global_topk": float(profile["global_topk_count"]),
         }
 
+    def _tri_regime_mode(self, obs: np.ndarray, risk_score: float) -> str:
+        blockage_indicator = float(obs[4])
+        last_outage = float(obs[5])
+        reflection_ratio = float(obs[6])
+        path_spread = float(obs[7])
+        if (
+            blockage_indicator < 0.20
+            and last_outage == 0.0
+            and reflection_ratio < 0.15
+            and path_spread < 0.15
+            and risk_score < float(self.cfg.risk_threshold)
+        ):
+            return "clear"
+        if (
+            blockage_indicator >= float(self.cfg.risk_threshold)
+            or last_outage > 0.0
+            or path_spread >= float(self.cfg.path_spread_threshold)
+            or risk_score >= 0.65
+        ):
+            return "extreme"
+        return "medium"
+
     def _select_fallback_action(
         self,
         obs: np.ndarray,
@@ -692,16 +714,38 @@ class ProposedV2Policy:
                 chosen_action = int(reactive_action)
                 chosen_score = reactive_score
                 veto_triggered = True
-        rate_veto_triggered = False
-        if (
-            self.cfg.proposedv2_rate_veto_enabled
-            and int(chosen_action) != int(reactive_action)
-            and rate_regret > float(self.cfg.proposedv2_rate_regret_threshold)
-            and safety_gain < float(self.cfg.proposedv2_min_safety_gain_for_fallback)
-        ):
-            chosen_action = int(reactive_action)
-            chosen_score = reactive_score
-            rate_veto_triggered = True
+        tri_mode = "medium"
+        clear_suppress_triggered = False
+        extreme_veto_triggered = False
+        if self.cfg.proposedv2_tri_regime_gate_enabled:
+            tri_mode = self._tri_regime_mode(obs, risk_score)
+            if tri_mode == "clear":
+                if int(chosen_action) != int(reactive_action):
+                    if safety_gain < float(self.cfg.proposedv2_clear_suppress_threshold):
+                        chosen_action = int(reactive_action)
+                        chosen_score = reactive_score
+                        clear_suppress_triggered = True
+            elif tri_mode == "extreme":
+                if int(chosen_action) != int(reactive_action):
+                    if (
+                        rate_regret > float(self.cfg.proposedv2_extreme_rate_regret_threshold)
+                        and safety_gain < float(self.cfg.proposedv2_extreme_min_safety_gain)
+                    ):
+                        chosen_action = int(reactive_action)
+                        chosen_score = reactive_score
+                        extreme_veto_triggered = True
+            rate_veto_triggered = False
+        else:
+            rate_veto_triggered = False
+            if (
+                self.cfg.proposedv2_rate_veto_enabled
+                and int(chosen_action) != int(reactive_action)
+                and rate_regret > float(self.cfg.proposedv2_rate_regret_threshold)
+                and safety_gain < float(self.cfg.proposedv2_min_safety_gain_for_fallback)
+            ):
+                chosen_action = int(reactive_action)
+                chosen_score = reactive_score
+                rate_veto_triggered = True
         fallback_kept = 1.0 if int(chosen_action) != int(reactive_action) else 0.0
         score_margin = chosen_score - scored_candidates[1][0] if len(scored_candidates) > 1 else chosen_score
         diagnostics = {
@@ -722,6 +766,9 @@ class ProposedV2Policy:
             "planner_reactive_safety_gain": float(safety_gain),
             "planner_reactive_veto_triggered": 1.0 if veto_triggered else 0.0,
             "planner_rate_veto_triggered": 1.0 if rate_veto_triggered else 0.0,
+            "planner_tri_regime_mode": {"clear": 0.0, "medium": 1.0, "extreme": 2.0}[tri_mode],
+            "planner_clear_suppress_triggered": 1.0 if clear_suppress_triggered else 0.0,
+            "planner_extreme_veto_triggered": 1.0 if extreme_veto_triggered else 0.0,
             "planner_rate_regret": float(rate_regret),
             "planner_safety_gain": float(safety_gain),
             "planner_fallback_kept_after_veto": float(fallback_kept),

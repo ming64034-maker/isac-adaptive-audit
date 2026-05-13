@@ -1,0 +1,10 @@
+variant,avg_rate_mean,avg_rate_std,outage_mean,outage_std,beam_success_mean,beam_success_std,avg_return_mean,avg_return_std,latency_ms_mean,latency_ms_std,status,skipped_reason
+BeliefAwareRollout_ModelV2,2.4071884707508513,0.0,0.1,0.0,0.9,0.0,2.2046884707508516,0.0,73.75219834017723,0.0,,
+BeliefAwareRollout_V1,4.944482942004052,0.0,0.1,0.0,0.7666666666666667,0.0,4.744482942004052,0.0,64.91983833354122,0.0,,
+OneStepPredictive,4.606536303031424,0.0,0.08333333333333333,0.0,0.8,0.0,4.417369636364757,0.0,3.639255002296219,0.0,,
+Oracle,5.525315022797866,0.0,0.0,0.0,0.9166666666666666,0.0,5.5178150227978655,0.0,3.0201833413836234,0.0,,
+ProposedV2_Full,5.023544912946925,0.0,0.08333333333333333,0.0,0.8,0.0,4.819378246280257,0.0,0.3793516681374361,0.0,,
+ProposedV2_NoLoSGuard,4.606536303031424,0.0,0.08333333333333333,0.0,0.8,0.0,4.417369636364757,0.0,3.6065950038998076,0.0,,
+ProposedV2_NoPredictiveFallback,5.005760062801599,0.0,0.08333333333333333,0.0,0.8,0.0,4.801593396134932,0.0,0.011105005978606641,0.0,,
+Reactive,5.005760062801599,0.0,0.08333333333333333,0.0,0.8,0.0,4.801593396134932,0.0,0.006950001503961782,0.0,,
+ProposedV2_NoPairwise,,,,,,,,,,,skipped,"Skipped: no separate checkpoint trained with beam_gain_pairwise_rank_loss_weight=0 is present. The current ProposedV2Policy uses the one-step predictor for fallback, so pairwise ranking affects the BeliefAwareRollout model path rather than this policy directly."

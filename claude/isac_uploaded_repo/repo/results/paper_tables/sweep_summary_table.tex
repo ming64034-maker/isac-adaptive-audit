@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Scene difficulty sweep average over all sweep points.}
+\label{tab:sweep_summary}
+\begin{tabular}{lcccc}
+\toprule
+Method & Rate & Outage & Beam & Return \\
+\midrule
+BeliefAwareRollout & 4.842 & 0.108 & 0.749 & 4.575 \\
+OneStepPredictive & 4.085 & 0.047 & 0.868 & 3.979 \\
+Oracle & 6.020 & 0.003 & 0.918 & 5.998 \\
+ProposedV2 & 4.977 & 0.080 & 0.787 & 4.776 \\
+Reactive & 4.991 & 0.105 & 0.746 & 4.728 \\
+\bottomrule
+\end{tabular}
+\end{table}
