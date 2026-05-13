@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Ablation study summary.}
+\label{tab:ablation}
+\begin{tabular}{lcccc}
+\toprule
+Variant & Rate & Outage & Return & ms \\
+\midrule
+BeliefAwareRollout\_ModelV2 & 2.941 & 0.034 & 2.868 & 3.518 \\
+BeliefAwareRollout\_V1 & 2.031 & 0.521 & 0.969 & 3.276 \\
+OneStepPredictive & 3.717 & 0.025 & 3.661 & 0.279 \\
+Oracle & 5.788 & 0.000 & 5.774 & 1.514 \\
+ProposedV2\_Adaptive & 4.753 & 0.072 & 4.570 & 0.299 \\
+ProposedV2\_Full & 4.813 & 0.068 & 4.639 & 0.278 \\
+ProposedV2\_NoLoSGuard & 3.703 & 0.026 & 3.643 & 0.723 \\
+ProposedV2\_NoPredictiveFallback & 4.729 & 0.094 & 4.496 & 0.205 \\
+Reactive & 4.823 & 0.107 & 4.555 & 0.003 \\
+\bottomrule
+\end{tabular}
+\end{table}
