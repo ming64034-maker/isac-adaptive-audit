@@ -162,10 +162,10 @@ class Config:
     proposedv2_predictor_utility_weight: float = 0.60
     proposedv2_predictor_utility_temperature: float = 0.75
     proposedv2_use_adaptive_difficulty: bool = False
-    proposedv2_rate_veto_enabled: bool = True
+    proposedv2_rate_veto_enabled: bool = False
     proposedv2_rate_regret_threshold: float = 0.012
     proposedv2_min_safety_gain_for_fallback: float = 0.012
-    proposedv2_tri_regime_gate_enabled: bool = True
+    proposedv2_tri_regime_gate_enabled: bool = False
     proposedv2_clear_suppress_threshold: float = 0.02
     proposedv2_extreme_rate_regret_threshold: float = 0.012
     proposedv2_extreme_min_safety_gain: float = 0.012

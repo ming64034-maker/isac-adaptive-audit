@@ -12,25 +12,25 @@ Table 1 reports the aggregate comparison across five methods.
 
 | Method | Avg Rate | Outage Prob | Beam Success | Return | Latency (ms) |
 |---|---|---|---|---|---|
-| **ProposedV2 (Ours)** | **5.065** | **0.072** | **0.793** | **4.881** | 0.278 |
+| **ProposedV2 (Ours)** | **5.064** | **0.072** | **0.793** | **4.881** | 0.286 |
 | Reactive | 5.010 | 0.106 | 0.742 | 4.744 | 0.003 |
-| Belief-Aware Rollout | 4.900 | 0.108 | 0.745 | 4.633 | 0.780 |
-| One-Step Predictive | 4.094 | 0.042 | 0.873 | 3.999 | 0.258 |
-| Oracle (upper bound) | 6.033 | 0.000 | 0.920 | 6.016 | 1.563 |
+| Belief-Aware Rollout | 4.900 | 0.108 | 0.745 | 4.633 | 0.815 |
+| One-Step Predictive | 4.094 | 0.042 | 0.873 | 3.999 | 0.266 |
+| Oracle (upper bound) | 6.033 | 0.000 | 0.920 | 6.016 | 1.568 |
 
 **Key observations:**
 
-1. **Rate**: ProposedV2 achieves 5.065 bits/s/Hz, a +0.055 gain over Reactive in aggregate and +0.165 over Belief-Aware Rollout. However, rate advantage is regime-dependent: ProposedV2 wins rate at only 6/16 scene sweep points. The aggregate rate gain is modest, while rate advantage is regime-dependent.
+1. **Rate**: ProposedV2 achieves 5.064 bits/s/Hz, a +0.054 gain over Reactive in aggregate and +0.163 over Belief-Aware Rollout. However, rate advantage is regime-dependent: ProposedV2 wins rate at only 6/16 scene sweep points. The aggregate rate gain is modest, while rate advantage is regime-dependent.
 
 2. **Outage** (strongest claim): ProposedV2 reduces outage probability by 32% vs Reactive (0.072 vs 0.106) and by 33% vs Belief-Aware Rollout (0.072 vs 0.108). Outage wins at 16/16 scene sweep points. This is the primary and most robust reliability gain.
 
 3. **Beam success** (strong claim): ProposedV2 achieves 0.793 beam success rate, +0.052 over Reactive. Beam success wins at 16/16 scene sweep points, confirming that predictive beam selection captures the correct beam more often than purely reactive angle-based selection.
 
-4. **Return**: The aggregate return of 4.881 reflects a balanced tradeoff — modest rate advantage (+1.1%), substantially lower outage (-32%), and higher beam accuracy (+7.0%). Return wins at 10/16 sweep points; the 6 points where Reactive leads on return are documented as failure regimes below.
+4. **Return**: The aggregate return of 4.881 reflects a balanced tradeoff — modest rate advantage (+1.1%), substantially lower outage (-32%), and higher beam accuracy (+7.0%). Return wins at 11/16 sweep points; the 5 points where Reactive leads on return are documented as failure regimes below.
 
-5. **Latency**: ProposedV2 adds ~0.28 ms of planning latency per slot compared to ~0.003 ms for Reactive. Planning latency is higher than Reactive but lower than Belief-Aware Rollout in the simplified simulator; real-time feasibility requires system-level validation.
+5. **Latency**: ProposedV2 adds ~0.29 ms of planning latency per slot compared to ~0.003 ms for Reactive. Planning latency is higher than Reactive but lower than Belief-Aware Rollout in the simplified simulator; real-time feasibility requires system-level validation.
 
-6. **Relative to upper bound**: ProposedV2 achieves 81.1% of the Oracle return, while Reactive achieves 78.8%. The gap to Oracle is primarily from imperfect blockage prediction.
+6. **Relative to upper bound**: ProposedV2 achieves 81.1% of the Oracle return, while Reactive achieves 78.9%. The gap to Oracle is primarily from imperfect blockage prediction.
 
 ## 4.3 Scene Sweep: Regime-Dependent Performance
 
@@ -38,32 +38,33 @@ We evaluate all methods across 16 scene configurations spanning four difficulty 
 
 | Dimension | Value | ProposedV2 Return | Reactive Return | Deficit | ProposedV2 Outage | Reactive Outage |
 |---|---|---|---|---|---|---|
-| blocker_density | 0.0 | 5.132 | 5.088 | **+0.044** | 0.060 | 0.071 |
-| blocker_density | 1.0 | 4.813 | 4.777 | **+0.036** | 0.077 | 0.101 |
-| blocker_density | 2.0 | 4.638 | 4.607 | **+0.031** | 0.089 | 0.120 |
-| blocker_density | 3.0 | 4.270 | 4.367 | **-0.097** | 0.103 | 0.146 |
-| obs_noise | 0.00 | 4.998 | 5.183 | **-0.185** | 0.047 | 0.050 |
-| obs_noise | 0.02 | 5.063 | 5.220 | **-0.157** | 0.051 | 0.057 |
-| obs_noise | 0.05 | 4.839 | 4.763 | **+0.076** | 0.071 | 0.099 |
-| obs_noise | 0.10 | 4.349 | 3.731 | **+0.618** | 0.090 | 0.179 |
-| blocker_speed | 0.5 | 4.713 | 4.695 | **+0.018** | 0.071 | 0.109 |
-| blocker_speed | 1.0 | 4.855 | 4.744 | **+0.111** | 0.074 | 0.106 |
-| blocker_speed | 1.5 | 4.826 | 4.821 | +0.005 | 0.076 | 0.099 |
-| blocker_speed | 2.0 | 4.724 | 4.771 | **-0.047** | 0.076 | 0.096 |
-| reflection_strength | weak | 4.667 | 4.689 | -0.022 | 0.117 | 0.133 |
-| reflection_strength | medium | 4.787 | 4.740 | **+0.047** | 0.082 | 0.107 |
-| reflection_strength | baseline | 4.855 | 4.744 | **+0.111** | 0.074 | 0.106 |
-| reflection_strength | strong | 4.859 | 4.705 | **+0.154** | 0.067 | 0.106 |
+| blocker_density | 0.0 | 5.153 | 5.088 | **+0.065** | 0.055 | 0.071 |
+| blocker_density | 1.0 | 4.825 | 4.777 | **+0.048** | 0.074 | 0.101 |
+| blocker_density | 2.0 | 4.687 | 4.607 | **+0.081** | 0.084 | 0.120 |
+| blocker_density | 3.0 | 4.258 | 4.367 | **-0.109** | 0.101 | 0.145 |
+| obs_noise | 0.00 | 4.994 | 5.183 | **-0.189** | 0.046 | 0.050 |
+| obs_noise | 0.02 | 5.065 | 5.220 | **-0.155** | 0.053 | 0.057 |
+| obs_noise | 0.05 | 4.862 | 4.763 | **+0.098** | 0.071 | 0.099 |
+| obs_noise | 0.10 | 4.407 | 3.731 | **+0.676** | 0.086 | 0.178 |
+| blocker_speed | 0.5 | 4.748 | 4.695 | **+0.054** | 0.068 | 0.109 |
+| blocker_speed | 1.0 | 4.881 | 4.744 | **+0.137** | 0.072 | 0.106 |
+| blocker_speed | 1.5 | 4.841 | 4.821 | **+0.020** | 0.074 | 0.099 |
+| blocker_speed | 2.0 | 4.724 | 4.771 | **-0.047** | 0.075 | 0.096 |
+| reflection_strength | weak | 4.677 | 4.689 | -0.012 | 0.114 | 0.133 |
+| reflection_strength | medium | 4.769 | 4.740 | **+0.030** | 0.081 | 0.107 |
+| reflection_strength | baseline | 4.881 | 4.744 | **+0.137** | 0.072 | 0.106 |
+| reflection_strength | strong | 4.876 | 4.705 | **+0.170** | 0.066 | 0.106 |
 
-**Aggregate sweep statistics**: ProposedV2 beats or matches Reactive on outage at 16/16 sweep points and on beam success at 16/16 sweep points — these are the two most robust claims. Return advantage is narrower (10/16 wins) and rate advantage is regime-dependent (6/16 wins).
+**Aggregate sweep statistics**: ProposedV2 beats or matches Reactive on outage at 16/16 sweep points and on beam success at 16/16 sweep points — these are the two most robust claims. Return advantage is narrower (11/16 wins) and rate advantage is regime-dependent (6/16 wins).
 
 **Failure regimes**: The largest return deficits appear at:
-- `obs_noise = 0.00` (deficit -0.185): With perfect observations, reactive beam selection is near-optimal and predictive fallback adds unnecessary switching cost.
-- `obs_noise = 0.02` (deficit -0.157): Very low noise still favors reactive simplicity.
-- `blocker_density = 3.00` (deficit -0.097): With 3 simultaneous blockers, the environment becomes chaotic; the predictor's world model rollouts degrade, causing incorrect fallback decisions.
+- `obs_noise = 0.00` (deficit -0.189): With perfect observations, reactive beam selection is near-optimal and predictive fallback adds unnecessary switching cost.
+- `obs_noise = 0.02` (deficit -0.155): Very low noise still favors reactive simplicity.
+- `blocker_density = 3.00` (deficit -0.109): With 3 simultaneous blockers, the environment becomes chaotic; the predictor's world model rollouts degrade, causing incorrect fallback decisions.
 - `blocker_speed = 2.00` (deficit -0.047): Fast-moving blockers reduce the effective prediction horizon.
+- `reflection_strength = weak` (deficit -0.012): Weak multipath leaves less temporal structure for the predictor to exploit, narrowing the benefit relative to reactive selection.
 
-**Strength regimes**: ProposedV2 outperforms Reactive most clearly at higher blocker speeds (where prediction adds value), moderate-to-high observation noise (0.05–0.10, where reactive decisions are unreliable), and strong reflection conditions (where multi-path information aids prediction).
+**Strength regimes**: ProposedV2 outperforms Reactive most clearly at moderate-to-high observation noise (0.05–0.10, where reactive decisions are unreliable), low-to-moderate blocker speeds (0.5–1.5x, where prediction remains actionable), and strong reflection conditions (where multi-path information aids prediction).
 
 ## 4.4 Ablation Study
 

@@ -7,7 +7,7 @@
 This claim is supported by:
 - 32% outage reduction vs Reactive (0.072 vs 0.106), 16/16 sweep points with better outage
 - 7.0% beam success rate improvement (0.793 vs 0.742), 16/16 sweep points with better beam success
-- Competitive aggregate rate (5.065 vs 5.010), though rate advantage is regime-dependent (6/16 wins)
+- Competitive aggregate rate (5.064 vs 5.010), though rate advantage is regime-dependent (6/16 wins)
 - 8.4% faster blockage recovery (1.86 vs 2.03 slots)
 
 ## Claim Boundaries
@@ -16,17 +16,17 @@ This claim is supported by:
 
 1. **Reliability improvement in aggregate**: ProposedV2 reduces outage probability and improves beam selection accuracy across a wide range of operating conditions.
 
-2. **Regime-dependent advantage**: The method provides largest gains in moderate-noise, medium-complexity conditions (return advantage +0.05 to +0.15). In easy regimes (near-zero noise) and very hard regimes (3+ blockers, very fast motion), the reactive baseline can match or exceed ProposedV2 on return.
+2. **Regime-dependent advantage**: The method provides the largest gains in noisy and medium-complexity conditions. In easy regimes (near-zero noise) and very hard regimes (3+ blockers, very fast motion), the reactive baseline can match or exceed ProposedV2 on return.
 
 3. **Essential components**: Both the LoS guard and predictive fallback are individually necessary; removing either causes substantial degradation (ablation: -0.996 and -0.143 return respectively).
 
-4. **Predictive value in noise**: The method's advantage grows with observation noise (+0.618 return advantage at obs_noise=0.10), demonstrating that learned dynamics models can filter sensing noise more effectively than reactive approaches.
+4. **Predictive value in noise**: The method's advantage grows with observation noise (+0.676 return advantage at obs_noise=0.10), demonstrating that learned dynamics models can filter sensing noise more effectively than reactive approaches.
 
 5. **Simulation evidence**: All claims are bounded by the simulated environment described in the evaluation protocol. No claims are made about real-world deployment performance.
 
 ### What we DO NOT claim
 
-1. **Universal superiority**: ProposedV2 does not outperform Reactive on all metrics in all regimes. Specifically, it underperforms on return at obs_noise ≈ 0.00 (-0.185), obs_noise ≈ 0.02 (-0.157), blocker_density = 3.00 (-0.097), and blocker_speed = 2.00 (-0.047).
+1. **Universal superiority**: ProposedV2 does not outperform Reactive on all metrics in all regimes. Specifically, it underperforms on return at obs_noise ≈ 0.00 (-0.189), obs_noise ≈ 0.02 (-0.155), blocker_density = 3.00 (-0.109), blocker_speed = 2.00 (-0.047), and weak reflections (-0.012).
 
 2. **State-of-the-art**: We do not claim superiority over all existing methods. The comparison set is limited to Reactive, One-Step Predictive, Belief-Aware Rollout, and Oracle baselines.
 
@@ -58,7 +58,7 @@ These negative results are documented in the Discussion section as partial direc
 | Outage reduction vs Reactive | **Strong** | Consistent at all 16 sweep points, 32% aggregate |
 | Beam success improvement | **Strong** | 16/16 sweep point wins, consistent across regimes |
 | Rate competitiveness | **Regime-dependent** | +1.1% aggregate, but wins at only 6/16 sweep points |
-| Return advantage | **Regime-conditional** | Wins at 10/16 sweep points, loses at 6/16 |
+| Return advantage | **Regime-conditional** | Wins at 11/16 sweep points, loses at 5/16 |
 | Blockage recovery speed | **Moderate** | 8.4% faster, but small sample (40 events) |
 | Ablation necessity | **Strong** | Large effect sizes (-0.996 and -0.143) |
 
