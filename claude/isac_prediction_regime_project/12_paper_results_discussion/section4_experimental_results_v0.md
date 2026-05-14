@@ -79,7 +79,7 @@ Table 3 reports the ablation results isolating the two core components of Propos
 
 **LoS Guard**: Removing the LoS guard (always-on predictive fallback) causes a large return drop of 0.893. While beam success rate increases (0.887 vs 0.793) and outage falls (0.039 vs 0.072), the rate collapses (4.079 vs 5.064) because the predictor overrides correct reactive beam choices in clear-channel conditions where no fallback is needed. This confirms the LoS guard is the single most critical component for preserving throughput.
 
-**Predictive Fallback**: Removing predictive fallback entirely (reverting to pure reactive beam selection) costs 0.083 in return and increases outage by 0.011 (from 0.072 to 0.083). This is the reliability contribution of the predictive mechanism — it reduces outage events that reactive selection alone cannot prevent.
+**Predictive Fallback**: Disabling the predictive fallback reduces return by 0.083 relative to the full ProposedV2 controller and increases outage from 0.072 to 0.083. However, this ablation is not identical to the Reactive baseline: it retains the remaining guarded ProposedV2 control structure and therefore still outperforms Reactive on outage, beam success, and return. This indicates that the predictive fallback provides an additional reliability improvement on top of the guarded controller, but it is not the only source of the gain.
 
 **Conclusion**: Both components are essential. The LoS guard ensures the predictor only intervenes when necessary (preserving rate), while the predictive fallback provides outage reduction when intervention is warranted.
 
