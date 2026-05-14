@@ -23,7 +23,7 @@
 - World model structure (architecture, training objective, rollout procedure)
 - Predictive fallback mechanism (beam scoring, selection rule)
 - Full ProposedV2 algorithm pseudocode
-**Current status**: Partial method description embedded in Problem Formulation (Section II-A) and Evaluation Protocol. Insufficient for an IEEE paper; reviewers will expect a standalone Method section.
+**Current status**: Partial method description embedded in Problem Formulation (Section II-A) and Evaluation Protocol. Insufficient for an IEEE paper; reviewers will expect a standalone Method section. Additionally, three baseline methods that appear in Table I — One-Step Predictive, Belief-Aware Rollout, and Oracle — are never defined or described anywhere in the paper text.
 **Source material**: `06_writing/section4_hybrid_controller_v0.md`, `04_code/repo_inventory.md`
 
 ### 2. Related Work section (missing)
@@ -66,6 +66,11 @@
 **Priority**: Low
 **What's needed**: FLOP counts, memory requirements, training wall-clock time, inference throughput bounds.
 **Current status**: Only latency measured in simulator (0.29 ms). No complexity analysis.
+
+### 8. Unlabeled Section V Data Tables (missing cataloguing)
+**Priority**: Medium
+**What's needed**: Sections V-C (Observation Noise Spectrum) and V-D (Blocker Density) contain embedded data tables that are not assigned table numbers, not cross-referenced in prose, and not listed in `paper_figure_table_list.md`. Section IV-D (Blockage Recovery) table is also never explicitly referenced as "Table IV" in surrounding text.
+**Current status**: Tables visible in markdown but uncatalogued. Should either be numbered (Table VI, VII) or consolidated into existing Table II since they are vertical slices of the scene sweep.
 
 ## Sections Intentionally Omitted
 
