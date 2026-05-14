@@ -31,6 +31,31 @@
 | reflection_strength | baseline | 4.881 | 4.744 | +0.137 | 0.072 | 0.106 |
 | reflection_strength | strong | 4.876 | 4.705 | +0.170 | 0.066 | 0.106 |
 
+## Table 3. Ablation Study
+
+| Variant | Rate | Outage | Bsucc | Return | Delta Return |
+|---|---:|---:|---:|---:|---:|
+| ProposedV2 (Full) | 5.064 | 0.072 | 0.793 | **4.881** | — |
+| No LoS Guard | 4.079 | 0.039 | 0.887 | 3.988 | -0.893 |
+| No Predictive Fallback | 5.010 | 0.083 | 0.779 | 4.798 | -0.083 |
+| Reactive | 5.010 | 0.106 | 0.742 | 4.744 | — |
+
+## Table 4. Blockage Event Recovery
+
+| Method | Avg Recovery (slots) | Preemptive Switch Rate | Fallback Trigger Rate |
+|---|---:|---:|---:|
+| ProposedV2 | **1.86** | 47.5% | 90.9% |
+| Reactive | 2.03 | 65.0% | 0.0% |
+| Belief-Aware Rollout | 3.16 | 72.5% | 0.0% |
+| Oracle | N/A (no drop) | 5.0% | 0.0% |
+
+## Threshold Sensitivity Note
+
+- Best threshold triplet from the sweep: `(0.80, 0.25, 0.20)`
+- Best return from the threshold sweep: `4.884`
+- Default-threshold baseline return: `4.881`
+- Top-10 threshold configurations lie within `0.005` return of each other
+
 ## Final Headline Counts
 
 - Outage wins vs Reactive: `16/16`

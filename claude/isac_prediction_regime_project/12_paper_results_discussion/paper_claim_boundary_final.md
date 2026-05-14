@@ -18,7 +18,7 @@ This claim is supported by:
 
 2. **Regime-dependent advantage**: The method provides the largest gains in noisy and medium-complexity conditions. In easy regimes (near-zero noise) and very hard regimes (3+ blockers, very fast motion), the reactive baseline can match or exceed ProposedV2 on return.
 
-3. **Essential components**: Both the LoS guard and predictive fallback are individually necessary; removing either causes substantial degradation (ablation: -0.996 and -0.143 return respectively).
+3. **Essential components**: Both the LoS guard and predictive fallback are individually necessary; removing either causes material degradation (ablation: -0.893 and -0.083 return respectively).
 
 4. **Predictive value in noise**: The method's advantage grows with observation noise (+0.676 return advantage at obs_noise=0.10), demonstrating that learned dynamics models can filter sensing noise more effectively than reactive approaches.
 
@@ -44,7 +44,7 @@ This claim is supported by:
 
 The following are explicitly NOT claimed:
 
-1. ❌ Adaptive difficulty improves performance (evidence: -0.069 return regression)
+1. ❌ Adaptive difficulty improves performance (evidence: -0.032 return regression)
 2. ❌ Uniform rate-preserving veto improves main return (evidence: -0.026 return regression)
 3. ❌ Tri-regime fallback gate matches baseline return (evidence: -0.039 return regression at best setting)
 4. ❌ Additional gating layers can simultaneously improve failure points and average return (evidence: consistent structural tradeoff across all three attempts)
@@ -60,7 +60,7 @@ These negative results are documented in the Discussion section as partial direc
 | Rate competitiveness | **Regime-dependent** | +1.1% aggregate, but wins at only 6/16 sweep points |
 | Return advantage | **Regime-conditional** | Wins at 11/16 sweep points, loses at 5/16 |
 | Blockage recovery speed | **Moderate** | 8.4% faster, but small sample (40 events) |
-| Ablation necessity | **Strong** | Large effect sizes (-0.996 and -0.143) |
+| Ablation necessity | **Moderate** | Large guard effect (-0.893); predictive fallback remains material (-0.083 return, +0.011 outage) |
 
 ## Figures and Tables Supporting Claims
 

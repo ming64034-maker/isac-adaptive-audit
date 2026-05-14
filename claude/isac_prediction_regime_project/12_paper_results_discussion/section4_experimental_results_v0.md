@@ -72,14 +72,14 @@ Table 3 reports the ablation results isolating the two core components of Propos
 
 | Variant | Rate | Outage | Bsucc | Return | Δ Return |
 |---|---|---|---|---|---|
-| ProposedV2 (Full) | 4.813 | 0.068 | 0.798 | **4.639** | — |
-| No LoS Guard | 3.703 | 0.026 | 0.914 | 3.643 | **-0.996** |
-| No Predictive Fallback | 4.729 | 0.094 | 0.768 | 4.496 | **-0.143** |
-| Reactive | 4.823 | 0.108 | 0.739 | 4.555 | — |
+| ProposedV2 (Full) | 5.064 | 0.072 | 0.793 | **4.881** | — |
+| No LoS Guard | 4.079 | 0.039 | 0.887 | 3.988 | **-0.893** |
+| No Predictive Fallback | 5.010 | 0.083 | 0.779 | 4.798 | **-0.083** |
+| Reactive | 5.010 | 0.106 | 0.742 | 4.744 | — |
 
-**LoS Guard**: Removing the LoS guard (always-on predictive fallback) causes a catastrophic return drop of 0.996. While beam success rate increases (0.914 vs 0.798), the rate collapses (3.703 vs 4.813) because the predictor overrides correct reactive beam choices in clear-channel conditions where no fallback is needed. This confirms the LoS guard is the single most critical component for preserving throughput.
+**LoS Guard**: Removing the LoS guard (always-on predictive fallback) causes a large return drop of 0.893. While beam success rate increases (0.887 vs 0.793) and outage falls (0.039 vs 0.072), the rate collapses (4.079 vs 5.064) because the predictor overrides correct reactive beam choices in clear-channel conditions where no fallback is needed. This confirms the LoS guard is the single most critical component for preserving throughput.
 
-**Predictive Fallback**: Removing predictive fallback entirely (reverting to pure reactive beam selection) costs 0.143 in return and increases outage by 0.026 (from 0.068 to 0.094). This is the reliability contribution of the predictive mechanism — it reduces outage events that reactive selection alone cannot prevent.
+**Predictive Fallback**: Removing predictive fallback entirely (reverting to pure reactive beam selection) costs 0.083 in return and increases outage by 0.011 (from 0.072 to 0.083). This is the reliability contribution of the predictive mechanism — it reduces outage events that reactive selection alone cannot prevent.
 
 **Conclusion**: Both components are essential. The LoS guard ensures the predictor only intervenes when necessary (preserving rate), while the predictive fallback provides outage reduction when intervention is warranted.
 
@@ -100,7 +100,7 @@ The Oracle baseline experiences no rate drop at blockage onset because it always
 
 ## 4.6 Threshold Sensitivity
 
-A sweep over the three primary hyperparameters (LoS confidence threshold, risk threshold, path spread threshold) across 100 configurations reveals that the method is robust to threshold choice within a reasonable range. The best configuration achieves return 4.878 at (los_confidence=0.80, risk=0.25, path_spread=0.20), only 0.003 below the default thresholds. The top 10 configurations all achieve return within 0.010 of each other, indicating the method does not require precise threshold tuning.
+A sweep over the three primary hyperparameters (LoS confidence threshold, risk threshold, path spread threshold) across 100 configurations reveals that the method is robust to threshold choice within a reasonable range. The best configuration achieves return 4.884 at (los_confidence=0.80, risk=0.25, path_spread=0.20), about 0.003 above the default thresholds (return 4.881). The top 10 configurations all achieve return within 0.005 of each other, indicating the method does not require precise threshold tuning.
 
 ## 4.7 Evidence Boundary
 

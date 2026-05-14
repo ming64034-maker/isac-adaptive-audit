@@ -31,7 +31,7 @@ Section 4.3 ProposedV2 vs Reactive table changes:
 | blocker_density | 1.0 | 4.813 | 4.825 | +0.012 | 0.077 | 0.074 |
 | blocker_density | 2.0 | 4.638 | 4.687 | +0.049 | 0.089 | 0.084 |
 | blocker_density | 3.0 | 4.270 | 4.258 | -0.013 | 0.103 | 0.101 |
-| obs_noise | 0.00 | 4.998 | 4.994 | -0.043 | 0.047 | 0.046 |
+| obs_noise | 0.00 | 4.998 | 4.994 | -0.004 | 0.047 | 0.046 |
 | obs_noise | 0.02 | 5.063 | 5.065 | +0.002 | 0.051 | 0.053 |
 | obs_noise | 0.05 | 4.839 | 4.862 | +0.025 | 0.074 | 0.071 |
 | obs_noise | 0.10 | 4.349 | 4.407 | +0.058 | 0.090 | 0.086 |
@@ -60,3 +60,46 @@ Return-loss points after the fix:
 - `blocker_density = 3.00`: `-0.109`
 - `blocker_speed = 2.00`: `-0.047`
 - `reflection_strength = weak`: `-0.012`
+
+## Ablation Table
+
+Section 4.4 paper-facing table changes after rerunning the ablation under the fixed baseline:
+
+| Variant | Old Rate | New Rate | Old Outage | New Outage | Old Bsucc | New Bsucc | Old Return | New Return |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| ProposedV2 (Full) | 4.813 | 5.064 | 0.068 | 0.072 | 0.798 | 0.793 | 4.639 | 4.881 |
+| No LoS Guard | 3.703 | 4.079 | 0.026 | 0.039 | 0.914 | 0.887 | 3.643 | 3.988 |
+| No Predictive Fallback | 4.729 | 5.010 | 0.094 | 0.083 | 0.768 | 0.779 | 4.496 | 4.798 |
+| Reactive | 4.823 | 5.010 | 0.108 | 0.106 | 0.739 | 0.742 | 4.555 | 4.744 |
+
+Derived narrative changes:
+
+| Item | Old Paper | New Paper |
+|---|---:|---:|
+| No LoS Guard return drop | -0.996 | -0.893 |
+| No Predictive Fallback return drop | -0.143 | -0.083 |
+| No Predictive Fallback outage increase | +0.026 | +0.011 |
+| Adaptive return gap vs baseline | -0.069 | -0.032 |
+
+## Blockage Event Recovery
+
+Section 4.5 was rerun under the fixed baseline configuration, but the paper-facing numbers were unchanged at reported precision:
+
+| Item | Before | After |
+|---|---:|---:|
+| ProposedV2 recovery time | 1.86 | 1.86 |
+| Reactive recovery time | 2.03 | 2.03 |
+| ProposedV2 preemptive switch rate | 47.5% | 47.5% |
+| Reactive preemptive switch rate | 65.0% | 65.0% |
+| ProposedV2 fallback trigger rate | 90.9% | 90.9% |
+
+## Threshold Sensitivity
+
+Section 4.6 changes after rerunning the threshold sweep under the fixed baseline:
+
+| Item | Old Paper | New Paper |
+|---|---:|---:|
+| Best threshold triplet | (0.80, 0.25, 0.20) | (0.80, 0.25, 0.20) |
+| Best return | 4.878 | 4.884 |
+| Best vs default-threshold return | -0.003 | +0.003 |
+| Top-10 return span | < 0.010 | < 0.005 |

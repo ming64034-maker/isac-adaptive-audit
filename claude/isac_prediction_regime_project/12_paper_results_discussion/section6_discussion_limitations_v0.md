@@ -8,7 +8,7 @@ This work presents Regime-Aware Predictive Beam Control (ProposedV2), a method f
 
 2. **Regime-dependent performance**: The advantage of predictive control is not uniform. It is largest in moderate-noise, medium-complexity channel conditions and narrowest in near-perfect or extremely chaotic conditions.
 
-3. **Component ablation**: Both the LoS guard and the predictive fallback mechanism are essential. Removing the LoS guard causes a catastrophic rate collapse (-0.996 return); removing predictive fallback eliminates the outage advantage.
+3. **Component ablation**: Both the LoS guard and the predictive fallback mechanism are essential. Removing the LoS guard causes a large return drop (-0.893); removing predictive fallback reduces return (-0.083) and weakens the outage advantage.
 
 4. **Blockage recovery**: ProposedV2 recovers from blockage events 8.4% faster than reactive methods while executing fewer preemptive beam switches.
 
@@ -55,7 +55,7 @@ During development, we explored several extensions to improve performance in the
 
 We implemented an adaptive difficulty estimator that computes a real-time hardness score from the observation vector and uses exponential smoothing to interpolate between "easy" and "hard" parameter profiles. The intent was to tighten fallback criteria in easy conditions and loosen them in hard conditions.
 
-**Result**: The adaptive variant achieved return 4.570 vs 4.639 for the non-adaptive baseline in the ablation setup, a drop of 0.069. The EMA-based difficulty signal introduced lag that caused the method to use wrong-regime parameters during regime transitions.
+**Result**: The adaptive variant achieved return 4.849 vs 4.881 for the non-adaptive baseline in the ablation setup, a drop of 0.032. The EMA-based difficulty signal introduced lag that caused the method to use wrong-regime parameters during regime transitions.
 
 **Conclusion**: The adaptive difficulty concept is directionally correct but the EMA-based implementation introduces unacceptable lag. This approach was not integrated into the main method.
 
@@ -77,7 +77,7 @@ We implemented a three-regime gate that classifies each step as clear, medium, o
 
 ### 6.3.4 Lessons from Negative Results
 
-The consistent pattern across all three failed extensions — directional improvement at failure points but net regression on average return — suggests that the fallback mechanism in ProposedV2 is already near its Pareto-optimal operating point for the current predictor and world model architecture. Additional gating logic can shift the tradeoff (helping hard cases at the cost of easy cases) but cannot simultaneously improve both. Future work should focus on improving the predictor and world model quality rather than adding post-hoc gating layers.
+The consistent pattern across all three failed extensions — directional improvement at failure points but net regression on average return — suggests that the current fallback mechanism sits on a difficult tradeoff surface for the present predictor and world model architecture. Additional gating logic can shift the tradeoff (helping hard cases at the cost of easy cases) but did not improve both failure points and average return simultaneously in the tested variants. Future work should focus on improving the predictor and world model quality rather than adding post-hoc gating layers.
 
 ## 6.4 Future Work
 
