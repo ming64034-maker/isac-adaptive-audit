@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Dynamic blockage is a central challenge for millimeter-wave and sub-THz integrated sensing and communication (ISAC) systems, where narrow beams are vulnerable to line-of-sight interruption, beam misalignment, and partial observability. Rather than treating predictive beam control as a universally superior alternative to reactive selection, we ask a narrower question: under which dynamic-blocking regimes does predictive information appear useful? We formulate dynamic-blocking ISAC beam control as an evidence-bounded predictive decision problem and evaluate Regime-Aware Predictive Beam Control (ProposedV2), a hybrid controller that combines a line-of-sight guard with one-step predictive fallback. In the current aggregate evaluation, ProposedV2 reduces outage probability by 32% (0.106 to 0.072) and improves beam success rate by 7.0% (0.742 to 0.793) relative to a strong reactive baseline, with outage and beam success improvements holding across all 16 sweep points spanning blocker density, observation noise, blocker speed, and reflection strength. Rate (+1.1%, from 5.010 to 5.064) and aggregate return (+2.9%, from 4.744 to 4.881) advantages are regime-dependent, with return wins at 11/16 sweep points and losses at the remaining 5. Component ablation confirms that both the LoS guard and the predictive fallback are individually necessary, with return drops of -0.893 and -0.083 respectively. These results support a regime-oriented interpretation of predictive beam control for dynamic-blocking ISAC, where reliability improvements are broadly observed but throughput advantages depend on operating conditions.
+Dynamic blockage is a central challenge for millimeter-wave and sub-THz integrated sensing and communication (ISAC) systems, where narrow beams are vulnerable to line-of-sight interruption, beam misalignment, and partial observability. Rather than treating predictive beam control as a universally superior alternative to reactive selection, we ask a narrower question: under which dynamic-blocking regimes does predictive information appear useful? We formulate dynamic-blocking ISAC beam control as an evidence-bounded predictive decision problem and evaluate Regime-Aware Predictive Beam Control (ProposedV2), a hybrid controller that combines a line-of-sight guard with one-step predictive fallback. In the current aggregate evaluation, ProposedV2 reduces outage probability by 32% (0.106 to 0.072) and improves beam success rate by 7.0% (0.742 to 0.793) relative to a strong reactive baseline, with outage and beam success improvements holding across all 16 sweep points spanning blocker density, observation noise, blocker speed, and reflection strength. Rate (+1.1%, from 5.010 to 5.064) and aggregate return (+2.9%, from 4.744 to 4.881) advantages are regime-dependent, with return wins at 11/16 sweep points and losses at the remaining 5. Component ablation indicates that both the LoS guard and the predictive fallback are individually necessary, with return drops of -0.893 and -0.083 respectively. These results support a regime-oriented interpretation of predictive beam control for dynamic-blocking ISAC, where reliability improvements are broadly observed but throughput advantages depend on operating conditions.
 
 ## I. Introduction
 
@@ -22,11 +22,37 @@ Taken together, the present results support a conservative but meaningful conclu
 
 ## II. Problem Formulation
 
-We study beam control for a simplified dynamic-blocking ISAC setting in which a serving transmitter-receiver pair must select directional beams over a finite codebook while the propagation environment changes over time. The focus of the present paper is not full-stack deployment modeling, but a decision-theoretic formulation that is faithful to the evaluation package and sufficient to reason about when predictive information may be useful.
+We study beam control for a simplified dynamic-blocking ISAC setting in which a serving transmitter-receiver pair must select directional beams over a finite codebook while the propagation environment changes over time. The beam action space is
+
+```text
+A = {1, 2, ..., B},
+```
+
+with `B = 32` in the evaluated setting. Each beam `a ∈ A` is associated with a main-lobe direction `θ(a)`.
 
 Time is discretized into decision slots indexed by `t = 1, ..., T`. At each slot, the environment has a latent state `s_t` that summarizes quantities affecting beam quality, including user geometry, blockage configuration, and propagation conditions. The controller does not observe `s_t` directly. Instead, it receives an observation `o_t`, which should be interpreted broadly as the currently available sensing or measurement information from which the next beam must be chosen. Let `b_t` denote the controller's internal summary of the observation history up to slot `t`; in a partially observed setting, `b_t` is the operational state on which decisions are based.
 
-The beam action at slot `t` is written as `a_t`, where `a_t` is selected from a finite beam codebook `A`. The immediate task reward is written as `r_t(a_t)`. In the current project package, `r_t(a_t)` should be understood as a communication-oriented utility that may reflect throughput and blockage-related penalties, while the paper separately reports rate, outage probability, beam success, and cumulative return as explicit evaluation metrics. This separation is important because the main empirical story is not a large throughput jump alone, but a multi-metric tradeoff under dynamic blockage.
+**Beam-domain channel model.** For beam `a`, the effective channel at slot `t` is modeled as a sum over available propagation paths:
+
+```text
+h_t(a) = Σ_{p ∈ P_t} α_{t,p} · g(a, θ_{t,p}),
+```
+
+where `P_t` denotes the set of active paths (LoS and specular reflections), `α_{t,p}` is the complex path gain of path `p`, `θ_{t,p}` is its angle of arrival/departure, and `g(a, θ)` captures the array gain of beam `a` evaluated at angle `θ`. Dynamic blockage affects the channel by removing obstructed paths from `P_t`; multipath reflections contribute additional terms with reduced gain.
+
+**SNR and rate.** Under additive white Gaussian noise with variance `σ²`, the signal-to-noise ratio for beam `a` at slot `t` is
+
+```text
+SNR_t(a) = (P_Tx · |h_t(a)|²) / σ²,
+```
+
+where `P_Tx` denotes the transmit power. The achievable rate in bits per second per Hertz is
+
+```text
+R_t(a) = log₂(1 + SNR_t(a)).
+```
+
+The beam action at slot `t` is written as `a_t ∈ A`. The immediate task reward `r_t(a_t)` is a communication-oriented utility that combines rate, outage penalties, and beam switching cost. In the current evaluation, rate, outage probability, beam success rate, and cumulative return are reported as separate metrics. This multi-metric separation is essential because the main empirical story is not a large throughput jump alone, but a rate-reliability-alignment tradeoff under dynamic blockage.
 
 For a policy `pi` that maps belief states to beam actions, the slot-level control objective is represented by
 
@@ -36,18 +62,57 @@ J(pi) = E[sum_{t=1}^{T} r_t(a_t)].
 
 Here the expectation is taken over user motion, blockage evolution, observation uncertainty, and any other randomness in the simulated environment. The resulting formulation is partially observed by construction: two histories can produce similar current observations while implying different near-future blockage risk, so a purely instantaneous decision rule need not be sufficient in harder conditions.
 
-### A. Reactive and Predictive Decision Classes
-
-The paper compares two controller classes at the level supported by the current evidence package. The first is a reactive policy `pi_R`, which selects beams from the currently available information without an explicit predictive fallback step. The second is a hybrid policy `pi_H`, corresponding to Regime-Aware Predictive Beam Control (ProposedV2).
-
-To describe the hybrid logic, we use a switching score `g_t` and a threshold `tau`. The notation is conceptual and should be read as the controller's fallback trigger, not as a separately validated risk estimator. The hybrid policy is written as
+**Outage and beam success.** Let `R_th` be the minimum rate threshold for reliable communication. The outage indicator for beam `a` at slot `t` is
 
 ```text
-pi_H(b_t) = pi_R(b_t), if g_t <= tau
-          = pi_P(b_t), if g_t > tau,
+O_t(a) = 𝟙{R_t(a) < R_th}.
 ```
 
-where `pi_P` denotes a predictive fallback policy. This notation captures the central design intent: remain reactive when the scene appears easy, but invoke predictive reasoning when blockage risk, reflection ambiguity, or observation uncertainty becomes more consequential. The contribution claimed in this manuscript is therefore not that prediction is always better, but that dynamic-blocking beam control is naturally expressed as a belief-dependent switching problem.
+Define the oracle-optimal beam at slot `t` as the beam that maximizes the achievable rate under full (noise-free) knowledge of the propagation environment:
+
+```text
+a_t* = arg max_{a ∈ A} R_t(a).
+```
+
+The beam success indicator is then
+
+```text
+S_t(a) = 𝟙{a = a_t*}.
+```
+
+Outage probability and beam success rate reported in the evaluation are the empirical averages of `O_t(a_t)` and `S_t(a_t)` over evaluation episodes. These metrics are reported alongside rate and cumulative return because beam selection accuracy cannot be inferred from average rate alone under dynamic blockage.
+
+### A. Reactive and Predictive Decision Classes
+
+The paper compares two controller classes at the level supported by the current evidence package.
+
+**Reactive policy.** The reactive policy `π_R` selects the beam whose main-lobe direction is closest to the coarse angle estimate `φ_t` extracted from the current observation `o_t`:
+
+```text
+a_t^R = arg min_{a ∈ A} |θ(a) - φ_t|,
+```
+
+where `φ_t = atan2(o_t[2], o_t[3])`. Here `o_t[2]` and `o_t[3]` are observation channels encoding the real and imaginary components of the estimated signal direction. This decision rule involves no history, no learned model, and no predictive step. Its computational cost is `O(B)` per slot for an exhaustive nearest-angle search (or `O(log B)` with sorted beam angles).
+
+**Hybrid policy (ProposedV2).** The hybrid policy `π_H`, corresponding to Regime-Aware Predictive Beam Control (ProposedV2), operates in two modes:
+
+```text
+a_t^H = a_t^R,              if guard_inactive(b_t),
+        arg max_{a ∈ C_t} score_t(a),   otherwise,
+```
+
+where `C_t ⊂ A` is the candidate shortlist (typically 18--20 beams out of 32) and `score_t(·)` is a multi-objective scoring function described in the companion code package and summarized in Section III. The guard is implemented as a multi-condition hard trigger evaluated from the current observation; when no trigger fires and a cooldown period is exhausted, the controller falls back to the reactive selection `a_t^R`.
+
+To express the logic compactly for the problem formulation, we use a conceptual switching score `g_t` and threshold `τ`:
+
+```text
+π_H(b_t) = π_R(b_t),   if g_t ≤ τ,
+           π_P(b_t),   if g_t > τ,
+```
+
+where `π_P` denotes the predictive fallback policy. This notation captures the central design intent: remain reactive when the scene appears easy, but invoke predictive reasoning when blockage risk, reflection ambiguity, or observation uncertainty becomes more consequential. The notation `g_t`, `τ` is a conceptual abstraction of the multi-condition guard logic; the paper does not claim that a scalar `g_t` has been separately calibrated or validated. The contribution claimed in this manuscript is therefore not that prediction is always better, but that dynamic-blocking beam control is naturally expressed as a belief-dependent switching problem.
+
+**Belief-Aware Rollout (comparator).** The Belief-Aware Rollout controller, included as a comparator, uses a learned latent dynamics model to score beams over a `H = 2`-step lookahead horizon with `M = 6` stochastic particles. Its per-slot cost is `O(K · H · M)` where `K` is the candidate count, compared to `O(K)` for ProposedV2 and `O(B)` for Reactive. In the evaluated setting (`B = 32`), all three controllers are computationally tractable in simulation, but the asymptotic scaling differs meaningfully for larger codebooks.
 
 ### B. Dynamic Blockage as a Belief-Dependent Decision Problem
 
@@ -153,7 +218,7 @@ We evaluate all methods across 16 scene configurations spanning four difficulty 
 - `blocker_speed = 2.00` (deficit -0.047): Fast-moving blockers reduce the effective prediction horizon.
 - `reflection_strength = weak` (deficit -0.012): Weak multipath leaves less temporal structure for the predictor to exploit.
 
-**Strength regimes**: ProposedV2 outperforms Reactive most clearly at moderate-to-high observation noise (0.05--0.10), low-to-moderate blocker speeds (0.5--1.5x), and strong reflection conditions.
+**Strength regimes**: ProposedV2 shows its clearest return advantages over Reactive at moderate-to-high observation noise (0.05--0.10), low-to-moderate blocker speeds (0.5--1.5x), and strong reflection conditions.
 
 ### C. Ablation Study
 
@@ -166,9 +231,9 @@ Table III reports the ablation results isolating the two core components of Prop
 | No Predictive Fallback | 5.010 | 0.083 | 0.779 | 4.798 | **-0.083** |
 | Reactive | 5.010 | 0.106 | 0.742 | 4.744 | -- |
 
-**LoS Guard**: Removing the LoS guard (always-on predictive fallback) causes a large return drop of 0.893. While beam success rate increases (0.887 vs 0.793) and outage falls (0.039 vs 0.072), the rate collapses (4.079 vs 5.064) because the predictor overrides correct reactive beam choices in clear-channel conditions where no fallback is needed. This confirms the LoS guard is the single most critical component for preserving throughput.
+**LoS Guard**: Removing the LoS guard (always-on predictive fallback) causes a large return drop of 0.893. While beam success rate increases (0.887 vs 0.793) and outage falls (0.039 vs 0.072), the rate collapses (4.079 vs 5.064) because the predictor overrides correct reactive beam choices in clear-channel conditions where no fallback is needed. This indicates the LoS guard is the single most critical component for preserving throughput.
 
-**Predictive Fallback**: Disabling the predictive fallback reduces return by 0.083 relative to the full ProposedV2 controller and increases outage from 0.072 to 0.083. However, this ablation is not identical to the Reactive baseline: it retains the remaining guarded ProposedV2 control structure and therefore still outperforms Reactive on outage, beam success, and return. This indicates that the predictive fallback provides an additional reliability improvement on top of the guarded controller, but it is not the only source of the gain.
+**Predictive Fallback**: Disabling the predictive fallback reduces return by 0.083 relative to the full ProposedV2 controller and increases outage from 0.072 to 0.083. However, this ablation is not identical to the Reactive baseline: it retains the remaining guarded ProposedV2 control structure and therefore still shows lower outage, higher beam success, and higher return than Reactive. This indicates that the predictive fallback provides an additional reliability improvement on top of the guarded controller, but it is not the only source of the gain.
 
 **Conclusion**: Both components are essential. The LoS guard ensures the predictor only intervenes when necessary (preserving rate), while the predictive fallback provides outage reduction when intervention is warranted.
 
@@ -183,17 +248,17 @@ We analyze the 40 blockage events recorded across all episodes. Recovery time is
 | Belief-Aware Rollout | 3.16 | 72.5% | 0.0% |
 | Oracle | N/A (no drop) | 5.0% | 0.0% |
 
-ProposedV2 recovers 0.17 slots (8.4%) faster than Reactive on average. More importantly, ProposedV2 achieves this with fewer preemptive switches (47.5% vs 65.0%) -- it correctly anticipates some blockages rather than reacting after the outage occurs. The fallback trigger rate of 90.9% confirms the LoS guard correctly activates the predictive mechanism around blockage onset events.
+ProposedV2 recovers 0.17 slots (8.4%) faster than Reactive on average. More importantly, ProposedV2 achieves this with fewer preemptive switches (47.5% vs 65.0%) -- it correctly anticipates some blockages rather than reacting after the outage occurs. The fallback trigger rate of 90.9% is consistent with the LoS guard correctly activating the predictive mechanism around blockage onset events.
 
 ### E. Threshold Sensitivity
 
-A sweep over the three primary hyperparameters (LoS confidence threshold, risk threshold, path spread threshold) across 100 configurations reveals that the method is robust to threshold choice within a reasonable range. The best configuration achieves return 4.884 at (los_confidence=0.80, risk=0.25, path_spread=0.20), approximately 0.003 above the default thresholds (return 4.881). The top 10 configurations all achieve return within 0.005 of each other, indicating the method does not require precise threshold tuning.
+A sweep over the three primary hyperparameters (LoS confidence threshold, risk threshold, path spread threshold) across 100 configurations indicates that the method is relatively insensitive to threshold choice within the tested range. The best configuration achieves return 4.884 at (los_confidence=0.80, risk=0.25, path_spread=0.20), approximately 0.003 above the default thresholds (return 4.881). The top 10 configurations all achieve return within 0.005 of each other, indicating the method does not require precise threshold tuning.
 
 ## V. Regime Analysis: When Predictive Beam Control Helps and Hurts
 
 ### A. Motivation
 
-The scene sweep results (Section IV-B) reveal that ProposedV2's advantage over Reactive is not uniform -- it varies systematically with scene difficulty. Outage and beam success are robust across all regimes (16/16 wins each), while return and rate advantages are regime-dependent (11/16 and 6/16 wins respectively). This section characterizes the regime boundaries.
+The scene sweep results (Section IV-B) reveal that ProposedV2's advantage over Reactive is not uniform -- it varies systematically with scene difficulty. Outage and beam success favor ProposedV2 at all 16 sweep points, while return and rate advantages are regime-dependent (11/16 and 6/16 wins respectively). This section characterizes the regime boundaries.
 
 ### B. Regime Taxonomy
 
@@ -214,7 +279,7 @@ We define three operational regimes:
 | 0.05 | 4.862 | 4.763 | **+0.098** | 0.071 | 0.099 |
 | 0.10 | 4.407 | 3.731 | **+0.676** | 0.086 | 0.178 |
 
-At zero or near-zero noise, the reactive baseline is near-optimal. Predictive fallback adds switching cost without providing meaningful outage reduction. At moderate noise (0.05), the predictor's history-conditioned world model filters observation noise, providing a cleaner signal for beam selection. At high noise (0.10), the gap widens dramatically: ProposedV2 return is +18.1% over Reactive, with outage nearly halved (0.086 vs 0.178). The cross-over point where ProposedV2 begins to outperform Reactive on return is approximately at `obs_noise between 0.03 and 0.04`. Outage and beam success favor ProposedV2 across the full noise range.
+At zero or near-zero noise, the reactive baseline is near-optimal. Predictive fallback adds switching cost without providing meaningful outage reduction. At moderate noise (0.05), the predictor's history-conditioned world model filters observation noise, providing a cleaner signal for beam selection. At high noise (0.10), the gap widens materially: ProposedV2 return is +18.1% over Reactive, with outage nearly halved (0.086 vs 0.178). The cross-over point where ProposedV2 begins to exceed Reactive on return is approximately at `obs_noise between 0.03 and 0.04`. Outage and beam success favor ProposedV2 across the full noise range.
 
 ### D. Blocker Density and Predictability Limits
 
@@ -259,11 +324,11 @@ This work presents Regime-Aware Predictive Beam Control (ProposedV2), a method f
 
 ### B. Limitations
 
-**Regime-Dependent Performance**: The most significant limitation is that ProposedV2 underperforms the reactive baseline on aggregate return at 5 of 16 sweep points: zero or very low observation noise (deficits -0.189 and -0.155), very high blocker density (-0.109 at 3 blockers), very fast blockers (-0.047 at 2.0x speed), and weak reflections (-0.012). These failure regimes reflect a fundamental tension: the predictor must decide when to override the current reactive decision, and this decision gets harder at both extremes of the predictability spectrum.
+**Regime-Dependent Performance**: The main limitation is that ProposedV2 underperforms the reactive baseline on aggregate return at 5 of 16 sweep points: zero or very low observation noise (deficits -0.189 and -0.155), very high blocker density (-0.109 at 3 blockers), very fast blockers (-0.047 at 2.0x speed), and weak reflections (-0.012). These failure regimes reflect a fundamental tension: the predictor must decide when to override the current reactive decision, and this decision gets harder at both extremes of the predictability spectrum.
 
 **Simulation-to-Reality Gap**: All experiments use a simulated environment with parametric channel models. Key simplifications include fixed reflector geometry, synthetic blocker motion, parametric pathloss models, no hardware impairments, and perfect beam codebook alignment. Real-world mmWave channels exhibit more complex spatial structure and hardware non-idealities.
 
-**Fixed Hyperparameter Configuration**: The method uses 3 primary hyperparameters. While the threshold sweep (Section IV-E) shows robustness within a reasonable range, the optimal values may shift under different channel models or mobility patterns.
+**Fixed Hyperparameter Configuration**: The method uses 3 primary hyperparameters. While the threshold sweep (Section IV-E) shows relative insensitivity within the tested range, the optimal values may shift under different channel models or mobility patterns.
 
 **Computational Cost**: The predictive fallback requires a forward pass through the predictor network and multi-step latent rollouts. Measured planning latency (0.29 ms) is higher than Reactive (0.003 ms) but lower than Belief-Aware Rollout (0.815 ms). Real-time feasibility requires system-level validation.
 
