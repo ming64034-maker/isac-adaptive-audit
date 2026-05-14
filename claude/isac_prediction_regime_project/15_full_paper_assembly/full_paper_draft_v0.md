@@ -197,6 +197,8 @@ Table I reports the aggregate comparison across five methods.
 
 6. **Relative to upper bound**: ProposedV2 achieves 81.1% of the Oracle return, while Reactive achieves 78.9%.
 
+**Belief-Aware Rollout in context.** Belief-Aware Rollout achieves lower aggregate return (4.633) than ProposedV2 (4.881) despite a more elaborate planning architecture. This result should not be read as evidence against predictive control or rollout-based methods in general. Under the current evaluation conditions — a world model trained on a fixed dataset of 48 episodes, evaluated with 2-step stochastic rollouts — the gap is consistent with the interpretation that multi-step imagined trajectories can be sensitive to the fidelity of the learned dynamics: when the latent model imperfectly captures the true environment, compounding across rollout steps may degrade rather than improve beam decisions. ProposedV2 takes a more conservative approach by using a guarded one-step fallback without multi-step rollout, which limits exposure to model compounding at the cost of shallower lookahead. The comparison is informative about the design tradeoff between shallow guarded prediction and deeper rollout-based planning under a fixed training budget, not about the general merit of either architecture.
+
 ### B. Scene Sweep: Regime-Dependent Performance
 
 We evaluate all methods across 16 scene configurations spanning four difficulty dimensions. Table II summarizes the comparison between ProposedV2 and Reactive across the sweep.
@@ -341,7 +343,7 @@ This work presents Regime-Aware Predictive Beam Control (ProposedV2), a method f
 
 **Fixed Hyperparameter Configuration**: The method uses 3 primary hyperparameters. While the threshold sweep (Section IV-E) shows relative insensitivity within the tested range, the optimal values may shift under different channel models or mobility patterns.
 
-**Computational Cost**: The predictive fallback requires a forward pass through the predictor network and multi-step latent rollouts. Measured planning latency (0.29 ms) is higher than Reactive (0.003 ms) but lower than Belief-Aware Rollout (0.815 ms). Real-time feasibility requires system-level validation.
+**Computational Cost**: The predictive fallback requires a forward pass through the predictor network and multi-step latent rollouts. Measured planning latency (0.29 ms) is higher than Reactive (0.003 ms) but lower than Belief-Aware Rollout (0.815 ms). Real-time feasibility requires system-level validation. The higher latency and lower return of Belief-Aware Rollout in the current evaluation reinforce the interpretation that deeper rollouts do not automatically translate into better decisions when the learned dynamics carry residual error.
 
 ### C. Negative Results: Attempts at Additional Gating
 
