@@ -16,15 +16,16 @@
 
 ## Sections Requiring Future Completion
 
-### 1. Method/Architecture Section (missing)
-**Priority**: High
-**What's needed**: A dedicated section between Evaluation Protocol and Experimental Results describing:
-- LoS guard architecture (input signals, confidence scoring, threshold logic)
-- World model structure (architecture, training objective, rollout procedure)
-- Predictive fallback mechanism (beam scoring, selection rule)
-- Full ProposedV2 algorithm pseudocode
-**Current status**: Partial method description embedded in Problem Formulation (Section II-A) and Evaluation Protocol. Insufficient for an IEEE paper; reviewers will expect a standalone Method section. Additionally, three baseline methods that appear in Table I — One-Step Predictive, Belief-Aware Rollout, and Oracle — are never defined or described anywhere in the paper text.
-**Source material**: `06_writing/section4_hybrid_controller_v0.md`, `04_code/repo_inventory.md`
+### 1. Method/Architecture Section (written, not yet integrated)
+**Priority**: High — now reduced to Medium (content exists, integration pending)
+**What's needed**: ~~A dedicated section between Evaluation Protocol and Experimental Results describing:~~ (content written in `method_section_v0.md`)
+- [x] LoS guard architecture (input signals, confidence scoring, threshold logic)
+- [x] World model structure (architecture, training objective, rollout procedure)
+- [x] Predictive fallback mechanism (beam scoring, selection rule)
+- [x] Full ProposedV2 algorithm pseudocode
+- [x] All five evaluated methods defined: Reactive, One-Step Predictive, Belief-Aware Rollout, Oracle, ProposedV2
+**Current status**: Standalone `method_section_v0.md` created in `15_full_paper_assembly/`. Covers all required content: 5 controller definitions with pseudocode, LoS guard with trigger logic, predictive fallback with scoring function, candidate shortlist construction, training summary, ablation variant descriptions, and explicit boundary against failed adaptive/veto/tri-regime variants. **Remaining work**: Integrate this section into `full_paper_draft_v0.md` (insert as Section III or IV, renumber downstream sections).
+**Source material**: `method_section_v0.md`, `06_writing/section4_hybrid_controller_v0.md`, `baselines.py`, `model.py`, `planner.py`, `config.py`
 
 ### 2. Related Work section (missing)
 **Priority**: High
