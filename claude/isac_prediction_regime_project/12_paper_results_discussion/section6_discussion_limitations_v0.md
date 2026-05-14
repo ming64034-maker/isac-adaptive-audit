@@ -16,13 +16,15 @@ This work presents Regime-Aware Predictive Beam Control (ProposedV2), a method f
 
 ### 6.2.1 Regime-Dependent Performance
 
-The most significant limitation is that ProposedV2 underperforms the reactive baseline on aggregate return in three distinct regimes:
+The most significant limitation is that ProposedV2 underperforms the reactive baseline on aggregate return at 5 of the 16 sweep points, spanning four regime families:
 
-- **Zero or near-zero observation noise** (deficit up to -0.185): When angle observations are near-perfect, reactive beam selection is near-optimal. The predictor's fallback mechanism adds switching cost without meaningful outage reduction because the reactive baseline already has low outage probability in these conditions.
+- **Zero or very low observation noise** (deficits -0.189 at `obs_noise=0.00` and -0.155 at `obs_noise=0.02`): When angle observations are near-perfect, reactive beam selection is near-optimal. The predictor's fallback mechanism adds switching cost without meaningful outage reduction because the reactive baseline already has low outage probability in these conditions.
 
-- **Very high blocker density** (deficit -0.097 at 3 blockers): With multiple simultaneous blockers, the environment becomes chaotic and the predictor's world model rollouts lose accuracy. The predictor overestimates its ability to anticipate blocker motion, leading to incorrect fallback decisions that increase switching cost.
+- **Very high blocker density** (deficit -0.109 at 3 blockers): With multiple simultaneous blockers, the environment becomes chaotic and the predictor's world model rollouts lose accuracy. The predictor overestimates its ability to anticipate blocker motion, leading to incorrect fallback decisions that increase switching cost.
 
 - **Very fast blockers** (deficit -0.047 at 2.0× speed): Fast-moving blockers reduce the effective prediction horizon, making the world model's look-ahead less valuable.
+
+- **Weak reflections** (deficit -0.012 in the weak-reflection setting): When multi-path structure is weak, the predictor has less temporal information to exploit, so its fallback intervention has only marginal value relative to reactive beam selection.
 
 These failure regimes are not artifacts of implementation — they reflect a fundamental tension in predictive beam control: the predictor must decide when to override the current reactive decision, and this decision gets harder at both extremes of the predictability spectrum (too easy → unnecessary override, too hard → unreliable override).
 
@@ -43,7 +45,7 @@ The method uses 3 primary hyperparameters (LoS confidence threshold, risk thresh
 
 ### 6.2.4 Computational Cost
 
-The predictive fallback requires a forward pass through the predictor network and, when the world model is used, multi-step latent rollouts. The measured planning latency (0.28 ms) is higher than Reactive (0.003 ms) but lower than Belief-Aware Rollout (0.78 ms) in the simplified simulator. Real-time feasibility requires system-level validation including hardware-in-the-loop measurement. The method also assumes access to a learned world model that must be trained offline; training cost and data requirements are not analyzed in this work.
+The predictive fallback requires a forward pass through the predictor network and, when the world model is used, multi-step latent rollouts. The measured planning latency (0.29 ms) is higher than Reactive (0.003 ms) but lower than Belief-Aware Rollout (0.815 ms) in the simplified simulator. Real-time feasibility requires system-level validation including hardware-in-the-loop measurement. The method also assumes access to a learned world model that must be trained offline; training cost and data requirements are not analyzed in this work.
 
 ## 6.3 Negative Results: Attempts at Additional Gating
 
@@ -61,7 +63,7 @@ We implemented an adaptive difficulty estimator that computes a real-time hardne
 
 We added a rate-preserving veto that blocks fallback decisions when the rate regret (predicted rate loss relative to reactive) exceeds a threshold while the safety gain (outage reduction) is below a minimum. Two threshold settings were tested: conservative (fire rate 0.45%) and aggressive (fire rate 2.94%).
 
-**Result**: The aggressive veto improved all three failure-point deficits by 14–30% (e.g., obs_noise=0.00 deficit from -0.185 to -0.158, obs_noise=0.02 from -0.156 to -0.109). However, the main comparison return dropped from 4.881 to 4.855 because the veto also blocked beneficial fallback decisions in easy and medium regimes.
+**Result**: The aggressive veto improved all three original failure-point deficits by about 16–30% (e.g., obs_noise=0.00 deficit from -0.189 to -0.158, obs_noise=0.02 from -0.155 to -0.109). However, the main comparison return dropped from 4.881 to 4.855 because the veto also blocked beneficial fallback decisions in easy and medium regimes.
 
 **Conclusion**: Rate-preserving veto provides directional improvement at failure points but the uniform threshold causes net regression. Regime-conditioned thresholds may resolve this, but were not pursued in this work.
 
@@ -69,7 +71,7 @@ We added a rate-preserving veto that blocks fallback decisions when the rate reg
 
 We implemented a three-regime gate that classifies each step as clear, medium, or extreme and applies different fallback policies: clear regime suppresses fallback unless safety gain exceeds a high threshold, medium regime keeps existing behavior, and extreme regime applies aggressive rate-preserving veto. The clear-suppress threshold was tuned across three values (0.06, 0.03, 0.02).
 
-**Result**: All three failure points showed consistent deficit reduction (22–49% at the best threshold of 0.03), but the main comparison return never reached the baseline (best: 4.842 vs 4.881, deficit -0.039). Lowering the clear-suppress threshold improved average return but weakened failure-point gains, revealing a structural tradeoff.
+**Result**: All three original failure points showed consistent deficit reduction (about 12–42% at the best threshold of 0.03), but the main comparison return never reached the baseline (best: 4.842 vs 4.881, deficit -0.039). Lowering the clear-suppress threshold improved average return but weakened failure-point gains, revealing a structural tradeoff.
 
 **Conclusion**: Regime-conditioned gating shows strong directional evidence as a concept, but the current implementation produces a net regression that could not be resolved through single-parameter tuning. The regime boundaries and threshold values require joint optimization that is beyond the scope of this work.
 
