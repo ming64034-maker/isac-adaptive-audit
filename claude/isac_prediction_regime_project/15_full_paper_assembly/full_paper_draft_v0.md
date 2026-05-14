@@ -154,9 +154,20 @@ This multi-metric view is essential because the current results do not support a
 
 The regime-oriented part of the protocol organizes evidence across four sampled dimensions: blocker density (0--3 blockers), blocker speed (0.5--2.0x baseline), observation noise (0.00--0.10 std), and reflection strength (weak/medium/baseline/strong). These dimensions correspond directly to the paper's decision-theoretic question about when predictive information appears useful.
 
-### D. Environment
+### D. Environment and Sensing Abstraction
 
-The environment models a multi-blocker dynamic channel with 32 candidate beams, 4 fixed reflectors, and pathloss + blockage-dependent SNR. Blockers move along constant-speed linear trajectories, and observations include angle estimates, SNR measurements, and path spread indicators.
+The environment models a multi-blocker dynamic channel with 32 candidate beams, 4 fixed reflectors, and pathloss + blockage-dependent SNR. Blockers move along constant-speed linear trajectories.
+
+In this manuscript, the sensing function is represented through compact blockage- and path-related features available to the controller, rather than through raw radar point clouds, camera, LiDAR, or full sensing waveform design. The observation vector `o_t ∈ R⁸` encodes the following ISAC-style sensing cues:
+
+- **Coarse angle estimate** (`o_t[2], o_t[3]`): real and imaginary components of the estimated signal direction, from which the coarse angle `φ_t = atan2(o_t[2], o_t[3])` is extracted.
+- **LoS confidence** (`o_t[4]`): an indicator of whether the line-of-sight path appears clear, approximately `1 - blocker_indicator`.
+- **Blockage risk** (`o_t[5]`): a scalar reflecting the likelihood that a blocker occludes the dominant path; ranges from 0 (no blockage) to 1 (fully blocked).
+- **Reflection activity** (`o_t[6]`): a measure of multipath energy relative to the dominant path.
+- **Path spread** (`o_t[7]`): angular spread across detected paths, capturing how dispersed the multipath arrivals are.
+- **SNR measurement** (`o_t[0], o_t[1]`): coarse received power and noise-floor estimates.
+
+This abstraction allows the study to isolate the decision problem induced by partial observability and dynamic blockage — namely, when predictive information derived from sensing features should override a simpler reactive beam selection — without requiring raw radar, camera, or LiDAR processing, and without claiming joint waveform or beamformer co-design. The paper does not assert that these features are directly measured by a hardware ISAC prototype, nor does it characterize sensing accuracy, resolution, or detection probability. The eight-dimensional observation vector is a simulation-level stand-in for the richer sensing side of a deployed ISAC system, chosen to make the regime-oriented comparison between reactive and predictive beam control tractable at the current evidence scale.
 
 ## IV. Experimental Results
 
