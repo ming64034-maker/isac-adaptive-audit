@@ -43,15 +43,15 @@
 **What's needed**: Complete bibliography with ~20--35 entries.
 **Current status**: Placeholder line only.
 
-### 4. Figures and Tables (cross-reference only)
+### 4. Figures and Tables (assets found, manuscript integration pending)
 **Priority**: Medium
 **What's needed**: 
-- Figure 1: Return difference vs Reactive across sweep dimensions
-- Figure 2: Outage probability vs observation noise
-- Figure 3: Blocker density impact on rate-outage tradeoff
-- Actual rendered table environments for Tables I--V
-**Current status**: Data tables present in markdown; figures referenced but not generated.
-**Source material**: `06_writing/figure_table_captions_v0.md`, `06_writing/figure_table_storyboard.md`
+- Decide which candidate figures become the final main-paper figure set
+- Add manuscript citations/captions for the selected figures
+- Consolidate or remove the redundant V-C / V-D slice tables once their figure replacements are adopted
+- Render final IEEE table environments for the retained numbered tables
+**Current status**: Candidate assets now exist for the conceptual schematic, scene-sweep overview, observation-noise slice, blocker-density tradeoff, ablation, blockage-event timeline, latency/complexity comparison, and a qualitative return-outage regime map. `paper_figure_table_list.md` now tracks these assets and statuses. The manuscript itself still contains no figure citations.
+**Source material**: `15_full_paper_assembly/paper_figure_table_list.md`, `15_full_paper_assembly/figure_table_restructuring_plan_v0.md`, `06_writing/figure_table_captions_v0.md`, `06_writing/figure_table_storyboard.md`
 
 ### 5. Statistical Reporting (missing)
 **Priority**: Medium
@@ -70,8 +70,8 @@
 
 ### 8. Unlabeled Section V Data Tables (missing cataloguing)
 **Priority**: Medium
-**What's needed**: Sections V-C (Observation Noise Spectrum) and V-D (Blocker Density) contain embedded data tables that are not assigned table numbers, not cross-referenced in prose, and not listed in `paper_figure_table_list.md`. Section IV-D (Blockage Recovery) table is also never explicitly referenced as "Table IV" in surrounding text.
-**Current status**: Tables visible in markdown but uncatalogued. Should either be numbered (Table VI, VII) or consolidated into existing Table II since they are vertical slices of the scene sweep.
+**What's needed**: Sections V-C (Observation Noise Spectrum) and V-D (Blocker Density) still contain embedded data tables that are not assigned table numbers and are not cross-referenced in prose. The V-F regime-boundary summary table is also embedded but unnumbered; if retained, it is the natural future `Table V`.
+**Current status**: `paper_figure_table_list.md` now catalogs the V-C, V-D, and V-F table objects and flags the intended replacements. Section IV-D is now explicitly referenced as `Table IV`, so that specific gap is resolved. The remaining choice is whether V-C / V-D survive as numbered tables or are removed once the replacement figures are integrated.
 
 ## Sections Intentionally Omitted
 
