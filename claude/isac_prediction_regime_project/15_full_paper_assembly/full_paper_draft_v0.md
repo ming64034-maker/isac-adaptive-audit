@@ -101,7 +101,7 @@ a_t^H = a_t^R,              if guard_inactive(b_t),
         arg max_{a ∈ C_t} score_t(a),   otherwise,
 ```
 
-where `C_t ⊂ A` is the candidate shortlist (typically 18--20 beams out of 32) and `score_t(·)` is a multi-objective scoring function described in the companion code package and summarized in Section III. The guard is implemented as a multi-condition hard trigger evaluated from the current observation; when no trigger fires and a cooldown period is exhausted, the controller falls back to the reactive selection `a_t^R`.
+where `C_t ⊂ A` is the candidate shortlist (typically 18--20 beams out of 32) and `score_t(·)` is a multi-objective scoring function described in the companion code package. The guard is implemented as a multi-condition hard trigger evaluated from the current observation; when no trigger fires and a cooldown period is exhausted, the controller falls back to the reactive selection `a_t^R`.
 
 To express the logic compactly for the problem formulation, we use a conceptual switching score `g_t` and threshold `τ`:
 
@@ -167,7 +167,11 @@ In this manuscript, the sensing function is represented through compact blockage
 - **Path spread** (`o_t[7]`): angular spread across detected paths, capturing how dispersed the multipath arrivals are.
 - **SNR measurement** (`o_t[0], o_t[1]`): coarse received power and noise-floor estimates.
 
-This abstraction allows the study to isolate the decision problem induced by partial observability and dynamic blockage — namely, when predictive information derived from sensing features should override a simpler reactive beam selection — without requiring raw radar, camera, or LiDAR processing, and without claiming joint waveform or beamformer co-design. The paper does not assert that these features are directly measured by a hardware ISAC prototype, nor does it characterize sensing accuracy, resolution, or detection probability. The eight-dimensional observation vector is a simulation-level stand-in for the richer sensing side of a deployed ISAC system, chosen to make the regime-oriented comparison between reactive and predictive beam control tractable at the current evidence scale.
+This abstraction isolates the decision problem induced by partial observability and dynamic blockage — namely, when sensing-derived features should trigger predictive fallback instead of a simpler reactive beam selection — without requiring raw radar, camera, or LiDAR processing, and without claiming joint waveform or beamformer co-design. Fig. 1 summarizes this schematic setting: a roadside BS selects beams from a finite codebook under blockage and reflection structure, while compact observation features govern when the controller remains reactive and when guarded predictive fallback is activated. The observation vector is therefore a simulation-level stand-in for richer ISAC sensing, not evidence of deployed hardware sensing, direct measurement, or validated sensing accuracy.
+
+![Figure 1 schematic](figures/figure1_problem_controller_schematic.svg)
+
+**Fig. 1.** Dynamic-blockage ISAC scenario and high-level controller logic. A roadside BS selects beams from a finite codebook under partial observability and dynamic blockage. The controller remains reactive in clearer conditions and activates predictive fallback when blockage-related observation features indicate elevated risk. The diagram is a schematic abstraction only and does not represent deployed hardware or directly measured sensing.
 
 ## IV. Experimental Results
 
@@ -227,7 +231,7 @@ We evaluate all methods across 16 scene configurations spanning four difficulty 
 **Failure regimes**: The largest return deficits appear at:
 - `obs_noise = 0.00` (deficit -0.189): With perfect observations, reactive beam selection is near-optimal and predictive fallback adds unnecessary switching cost.
 - `obs_noise = 0.02` (deficit -0.155): Very low noise still favors reactive simplicity.
-- `blocker_density = 3.00` (deficit -0.109): With 3 simultaneous blockers, the environment becomes chaotic; the predictor's world model rollouts degrade, causing incorrect fallback decisions.
+- `blocker_density = 3.00` (deficit -0.109): With 3 simultaneous blockers, the environment becomes chaotic; the predictor's one-step forecasts become less reliable, causing incorrect fallback decisions.
 - `blocker_speed = 2.00` (deficit -0.047): Fast-moving blockers reduce the effective prediction horizon.
 - `reflection_strength = weak` (deficit -0.012): Weak multipath leaves less temporal structure for the predictor to exploit.
 
@@ -252,7 +256,7 @@ Table III reports the ablation results isolating the two core components of Prop
 
 ### D. Blockage Event Recovery
 
-We analyze the 40 blockage events recorded across all episodes. Recovery time is defined as the number of slots from blockage onset until the rate returns to within 80% of the pre-blockage level.
+We analyze the 40 blockage events recorded across all episodes. Table IV summarizes the recovery statistics. Recovery time is defined as the number of slots from blockage onset until the rate returns to within 80% of the pre-blockage level.
 
 | Method | Avg Recovery (slots) | Preemptive Switch Rate | Fallback Trigger Rate |
 |---|---|---|---|
@@ -261,7 +265,7 @@ We analyze the 40 blockage events recorded across all episodes. Recovery time is
 | Belief-Aware Rollout | 3.16 | 72.5% | 0.0% |
 | Oracle | N/A (no drop) | 5.0% | 0.0% |
 
-ProposedV2 recovers 0.17 slots (8.4%) faster than Reactive on average. More importantly, ProposedV2 achieves this with fewer preemptive switches (47.5% vs 65.0%) -- it correctly anticipates some blockages rather than reacting after the outage occurs. The fallback trigger rate of 90.9% is consistent with the LoS guard correctly activating the predictive mechanism around blockage onset events.
+ProposedV2 recovers 0.17 slots (8.4%) faster than Reactive on average. More importantly, ProposedV2 achieves this with fewer preemptive switches (47.5% vs 65.0%) -- it anticipates some blockages rather than reacting after the outage occurs. The fallback trigger rate of 90.9% is consistent with the LoS guard activating the predictive mechanism around blockage onset events.
 
 ### E. Threshold Sensitivity
 
@@ -279,9 +283,9 @@ We define three operational regimes:
 
 **Clear Regime**: Blockage indicator less than 0.20, no recent outage, reflection ratio less than 0.15, path spread less than 0.15, risk score below threshold. LoS is dominant, channel state is stable. The reactive baseline makes accurate beam decisions from angle information alone. ProposedV2's LoS guard keeps the predictor inactive most of the time. Outage improvement is small in absolute terms because both methods achieve low outage. This regime is not where ProposedV2's value proposition lies.
 
-**Medium-Risk Regime**: Moderate blockage indicator, some path spread, occasional reflection activity. Neither fully clear nor severely degraded. This is the intended operating regime. The LoS guard activates predictive fallback with moderate confidence, and the world model rollouts provide useful look-ahead. Largest return advantages over Reactive are around +0.10 to +0.14. At `obs_noise = 0.05`, ProposedV2 achieves return 4.862 vs Reactive 4.763 (+0.098), with outage 0.071 vs 0.099 (-28%). At `blocker_speed = 1.0`, return advantage is +0.137 with outage reduction of 32%.
+**Medium-Risk Regime**: Moderate blockage indicator, some path spread, occasional reflection activity. Neither fully clear nor severely degraded. This is the intended operating regime. The LoS guard activates predictive fallback with moderate confidence, and the history-conditioned predictive estimate provides useful look-ahead. Largest return advantages over Reactive are around +0.10 to +0.14. At `obs_noise = 0.05`, ProposedV2 achieves return 4.862 vs Reactive 4.763 (+0.098), with outage 0.071 vs 0.099 (-28%). At `blocker_speed = 1.0`, return advantage is +0.137 with outage reduction of 32%.
 
-**Extreme Regime**: High blocker density (3 blockers), last_outage positive, path spread above threshold, risk score greater than 0.65. The channel is chaotic; the predictor's world model rollouts become unreliable due to compounding uncertainty. Predictive fallback is frequently active but the quality of fallback decisions degrades. At `blocker_density = 3.00`, ProposedV2 return is 4.258 vs Reactive 4.367 (-0.109 deficit), though outage remains substantially better (0.101 vs 0.145, -30%).
+**Extreme Regime**: High blocker density (3 blockers), last_outage positive, path spread above threshold, risk score greater than 0.65. The channel is chaotic; the predictor's one-step estimates become unreliable under rapidly changing dynamics. Predictive fallback is frequently active but the quality of fallback decisions degrades. At `blocker_density = 3.00`, ProposedV2 return is 4.258 vs Reactive 4.367 (-0.109 deficit), though outage remains substantially better (0.101 vs 0.145, -30%).
 
 ### C. The Observation Noise Spectrum
 
@@ -343,7 +347,7 @@ This work presents Regime-Aware Predictive Beam Control (ProposedV2), a method f
 
 **Fixed Hyperparameter Configuration**: The method uses 3 primary hyperparameters. While the threshold sweep (Section IV-E) shows relative insensitivity within the tested range, the optimal values may shift under different channel models or mobility patterns.
 
-**Computational Cost**: The predictive fallback requires a forward pass through the predictor network and multi-step latent rollouts. Measured planning latency (0.29 ms) is higher than Reactive (0.003 ms) but lower than Belief-Aware Rollout (0.815 ms). Real-time feasibility requires system-level validation. The higher latency and lower return of Belief-Aware Rollout in the current evaluation reinforce the interpretation that deeper rollouts do not automatically translate into better decisions when the learned dynamics carry residual error.
+**Computational Cost**: The predictive fallback requires predictor inference, guarded shortlist scoring, and fallback logic to score candidate beams. Measured planning latency (0.29 ms) is higher than Reactive (0.003 ms) but lower than Belief-Aware Rollout (0.815 ms). Real-time feasibility requires system-level validation. The higher latency and lower return of Belief-Aware Rollout in the current evaluation reinforce the interpretation that deeper rollouts do not automatically translate into better decisions when the learned dynamics carry residual error.
 
 ### C. Negative Results: Attempts at Additional Gating
 
