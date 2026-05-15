@@ -15,7 +15,7 @@
         font-size: 17px;
       }
       .tiny {
-        font-size: 15px;
+        font-size: 17px;
       }
       .box-title {
         font-size: 20px;
@@ -168,14 +168,14 @@
   <path d="M734,560 L800,543" class="thin" marker-end="url(#arrowGray)"/>
   <path d="M734,588 L800,608" class="thin" marker-end="url(#arrowGray)"/>
 
-  <text x="758" y="548" class="tiny" fill="#4d4d4d">LoS clear</text>
-  <text x="756" y="622" class="tiny" fill="#4d4d4d">LoS at risk</text>
+  <text x="760" y="548" class="tiny" fill="#4d4d4d">clear</text>
+  <text x="758" y="622" class="tiny" fill="#4d4d4d">at risk</text>
 
   <path d="M342,575 L430,575" stroke="#666666" stroke-width="1.8" fill="none" stroke-dasharray="6 5" marker-end="url(#arrowGray)"/>
 
   <!-- Minimal legend -->
   <line x1="820" y1="455" x2="875" y2="455" stroke="#1f4e79" stroke-width="3"/>
-  <text x="887" y="461" class="tiny">direct path / selected beam</text>
+  <text x="887" y="461" class="tiny">direct / selected</text>
   <line x1="820" y1="480" x2="875" y2="480" stroke="#1f4e79" stroke-width="2.5" stroke-dasharray="8 6"/>
-  <text x="887" y="486" class="tiny">reflected path / fallback beam</text>
+  <text x="887" y="486" class="tiny">reflected / fallback</text>
 </svg>
