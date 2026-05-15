@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Dynamic-blockage ISAC scenario and high-level controller schematic</title>
+  <desc id="desc">A clean scientific schematic showing a roadside base station with a finite beam codebook, a mobile vehicle, a moving blocker, a blocked line-of-sight path, a reflected path via a building, sensing-derived observation features, and a compact controller inset with line-of-sight guard branching between reactive and predictive fallback decisions.</desc>
+  <defs>
+    <style>
+      text {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        fill: #111111;
+      }
+      .label {
+        font-size: 21px;
+        font-weight: 600;
+      }
+      .small {
+        font-size: 17px;
+      }
+      .tiny {
+        font-size: 15px;
+      }
+      .box-title {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .line {
+        stroke: #1f1f1f;
+        stroke-width: 2;
+        fill: none;
+      }
+      .thin {
+        stroke: #4d4d4d;
+        stroke-width: 1.5;
+        fill: none;
+      }
+      .blue {
+        stroke: #1f4e79;
+      }
+      .dash {
+        stroke-dasharray: 8 6;
+      }
+    </style>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f4e79"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666666"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="700" fill="#ffffff"/>
+
+  <!-- Scene -->
+  <line x1="40" y1="395" x2="1160" y2="395" class="line"/>
+  <line x1="40" y1="420" x2="1160" y2="420" class="thin"/>
+  <line x1="75" y1="408" x2="135" y2="408" class="thin"/>
+  <line x1="165" y1="408" x2="225" y2="408" class="thin"/>
+  <line x1="255" y1="408" x2="315" y2="408" class="thin"/>
+  <line x1="345" y1="408" x2="405" y2="408" class="thin"/>
+  <line x1="435" y1="408" x2="495" y2="408" class="thin"/>
+  <line x1="525" y1="408" x2="585" y2="408" class="thin"/>
+  <line x1="615" y1="408" x2="675" y2="408" class="thin"/>
+  <line x1="705" y1="408" x2="765" y2="408" class="thin"/>
+  <line x1="795" y1="408" x2="855" y2="408" class="thin"/>
+  <line x1="885" y1="408" x2="945" y2="408" class="thin"/>
+  <line x1="975" y1="408" x2="1035" y2="408" class="thin"/>
+  <line x1="1065" y1="408" x2="1125" y2="408" class="thin"/>
+
+  <!-- RSU -->
+  <rect x="70" y="210" width="22" height="175" fill="#d9d9d9" stroke="#1f1f1f" stroke-width="2"/>
+  <rect x="62" y="385" width="38" height="14" fill="#d9d9d9" stroke="#1f1f1f" stroke-width="2"/>
+  <rect x="96" y="175" width="72" height="110" rx="6" fill="#fafafa" stroke="#1f1f1f" stroke-width="2"/>
+  <rect x="116" y="193" width="12" height="18" fill="#d9e6f2" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="136" y="193" width="12" height="18" fill="#d9e6f2" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="116" y="221" width="12" height="18" fill="#d9e6f2" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="136" y="221" width="12" height="18" fill="#d9e6f2" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="116" y="249" width="12" height="18" fill="#d9e6f2" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="136" y="249" width="12" height="18" fill="#d9e6f2" stroke="#1f1f1f" stroke-width="1"/>
+  <text x="120" y="122" class="label" text-anchor="middle">Roadside BS / RSU</text>
+  <text x="120" y="147" class="small" text-anchor="middle">antenna array</text>
+
+  <!-- Beam codebook fan -->
+  <path d="M166,230 L300,160 Q316,166 326,182 L182,244 Z" fill="#eef3f8" stroke="#9fb4c7" stroke-width="1.5"/>
+  <path d="M166,230 L308,198 Q322,208 328,224 L182,242 Z" fill="#eef3f8" stroke="#9fb4c7" stroke-width="1.5"/>
+  <path d="M166,230 L306,236 Q318,246 322,258 L180,240 Z" fill="#eef3f8" stroke="#9fb4c7" stroke-width="1.5"/>
+  <path d="M166,230 L298,272 Q308,286 310,300 L178,240 Z" fill="#eef3f8" stroke="#9fb4c7" stroke-width="1.5"/>
+  <path d="M166,230 L288,306 Q294,320 294,332 L176,242 Z" fill="#eef3f8" stroke="#9fb4c7" stroke-width="1.5"/>
+
+  <path d="M166,230 L306,236 Q318,246 322,258 L180,240 Z" fill="#1f4e79" stroke="#1f4e79" stroke-width="1.5"/>
+  <path d="M166,230 L300,160 Q316,166 326,182 L182,244 Z" fill="none" stroke="#666666" stroke-width="2" stroke-dasharray="7 5"/>
+
+  <text x="258" y="112" class="small">Finite beam codebook</text>
+  <text x="226" y="224" class="small" fill="#1f4e79">selected</text>
+  <text x="228" y="176" class="small" fill="#555555">fallback</text>
+
+  <!-- Building -->
+  <rect x="968" y="122" width="124" height="226" fill="#fafafa" stroke="#1f1f1f" stroke-width="2"/>
+  <line x1="968" y1="146" x2="1092" y2="160" class="thin"/>
+  <line x1="968" y1="302" x2="1092" y2="302" class="thin"/>
+  <rect x="990" y="160" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="1022" y="164" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="1054" y="168" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="990" y="220" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="1022" y="224" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="1054" y="228" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="990" y="280" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="1022" y="284" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <rect x="1054" y="288" width="16" height="34" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <text x="1030" y="92" class="label" text-anchor="middle">Building / wall</text>
+
+  <!-- Vehicle -->
+  <rect x="820" y="330" width="160" height="44" rx="16" fill="#fafafa" stroke="#1f1f1f" stroke-width="2"/>
+  <path d="M845,330 L878,306 L935,306 L965,330 Z" fill="#fafafa" stroke="#1f1f1f" stroke-width="2"/>
+  <rect x="883" y="313" width="39" height="16" fill="#ffffff" stroke="#1f1f1f" stroke-width="1"/>
+  <circle cx="860" cy="376" r="16" fill="#ffffff" stroke="#1f1f1f" stroke-width="2"/>
+  <circle cx="944" cy="376" r="16" fill="#ffffff" stroke="#1f1f1f" stroke-width="2"/>
+  <circle cx="860" cy="376" r="7" fill="#d9d9d9" stroke="#1f1f1f" stroke-width="1"/>
+  <circle cx="944" cy="376" r="7" fill="#d9d9d9" stroke="#1f1f1f" stroke-width="1"/>
+  <text x="910" y="286" class="label" text-anchor="middle">Mobile user / vehicle</text>
+
+  <!-- Moving blocker -->
+  <circle cx="520" cy="294" r="14" fill="#d9d9d9" stroke="#1f1f1f" stroke-width="2"/>
+  <line x1="520" y1="308" x2="520" y2="346" class="line"/>
+  <line x1="520" y1="320" x2="500" y2="336" class="line"/>
+  <line x1="520" y1="320" x2="540" y2="336" class="line"/>
+  <line x1="520" y1="346" x2="506" y2="375" class="line"/>
+  <line x1="520" y1="346" x2="536" y2="375" class="line"/>
+  <text x="520" y="450" class="small" text-anchor="middle">Moving blocker</text>
+  <path d="M468,438 C490,438 506,438 534,438" stroke="#666666" stroke-width="1.8" fill="none" marker-end="url(#arrowGray)"/>
+
+  <!-- Paths -->
+  <path d="M166,230 L870,314" stroke="#1f4e79" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+  <path d="M166,230 L987,170 L934,311" stroke="#1f4e79" stroke-width="2.5" fill="none" stroke-dasharray="8 6" marker-end="url(#arrowBlue)"/>
+  <circle cx="560" cy="276" r="28" fill="none" stroke="#666666" stroke-width="1.8" stroke-dasharray="6 5"/>
+  <line x1="548" y1="264" x2="572" y2="288" stroke="#b22222" stroke-width="3"/>
+  <line x1="548" y1="288" x2="572" y2="264" stroke="#b22222" stroke-width="3"/>
+  <text x="598" y="244" class="small" fill="#1f4e79">Blocked LoS</text>
+  <text x="856" y="164" class="small" fill="#1f4e79">Reflected path</text>
+
+  <!-- Observation features -->
+  <rect x="72" y="500" width="270" height="150" rx="10" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.8"/>
+  <text x="98" y="530" class="box-title">Observation features</text>
+  <circle cx="100" cy="558" r="4" fill="#1f4e79"/>
+  <text x="116" y="564" class="small">LoS confidence</text>
+  <circle cx="100" cy="586" r="4" fill="#1f4e79"/>
+  <text x="116" y="592" class="small">Blockage risk</text>
+  <circle cx="100" cy="614" r="4" fill="#1f4e79"/>
+  <text x="116" y="620" class="small">Reflection activity</text>
+  <circle cx="100" cy="642" r="4" fill="#1f4e79"/>
+  <text x="116" y="648" class="small">Path spread</text>
+
+  <!-- Controller inset -->
+  <rect x="430" y="490" width="690" height="170" rx="10" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.8"/>
+  <text x="456" y="520" class="box-title">High-level controller</text>
+
+  <rect x="488" y="548" width="130" height="52" rx="6" fill="#fafafa" stroke="#1f1f1f" stroke-width="1.6"/>
+  <text x="553" y="580" class="small" text-anchor="middle">Observation</text>
+
+  <path d="M690,540 L734,574 L690,608 L646,574 Z" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.8"/>
+  <text x="690" y="569" class="small" text-anchor="middle">LoS</text>
+  <text x="690" y="590" class="small" text-anchor="middle">guard</text>
+
+  <rect x="800" y="520" width="136" height="46" rx="6" fill="#f6f6f6" stroke="#1f1f1f" stroke-width="1.6"/>
+  <text x="868" y="549" class="small" text-anchor="middle">Reactive</text>
+
+  <rect x="800" y="585" width="176" height="46" rx="6" fill="#f6f6f6" stroke="#1f1f1f" stroke-width="1.6"/>
+  <text x="888" y="614" class="small" text-anchor="middle">Predictive fallback</text>
+
+  <path d="M618,574 L646,574" class="thin" marker-end="url(#arrowGray)"/>
+  <path d="M734,560 L800,543" class="thin" marker-end="url(#arrowGray)"/>
+  <path d="M734,588 L800,608" class="thin" marker-end="url(#arrowGray)"/>
+
+  <text x="758" y="548" class="tiny" fill="#4d4d4d">LoS clear</text>
+  <text x="756" y="622" class="tiny" fill="#4d4d4d">LoS at risk</text>
+
+  <path d="M342,575 L430,575" stroke="#666666" stroke-width="1.8" fill="none" stroke-dasharray="6 5" marker-end="url(#arrowGray)"/>
+
+  <!-- Minimal legend -->
+  <line x1="820" y1="455" x2="875" y2="455" stroke="#1f4e79" stroke-width="3"/>
+  <text x="887" y="461" class="tiny">direct path / selected beam</text>
+  <line x1="820" y1="480" x2="875" y2="480" stroke="#1f4e79" stroke-width="2.5" stroke-dasharray="8 6"/>
+  <text x="887" y="486" class="tiny">reflected path / fallback beam</text>
+</svg>
